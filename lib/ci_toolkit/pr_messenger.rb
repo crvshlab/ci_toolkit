@@ -11,8 +11,8 @@ module CiToolkit
       @messenger_text = messenger_text
     end
 
-    def send_build_deployed(name, version_name)
-      send(@messenger_text.for_new_build(name, version_name))
+    def send_build_deployed(name, version_name, tag)
+      send(@messenger_text.for_new_build(name, version_name, tag))
     end
 
     def send_ci_failed(reason)

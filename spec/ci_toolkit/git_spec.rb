@@ -43,9 +43,12 @@ describe CiToolkit::Git do
     expect(sut.branch).to eq "the-branch"
   end
 
-  it "correctlies recognize an infrastructure branch" do
+  it "correctly recognizes an infrastructure branch" do
     sut = described_class.new(nil, "infra/branch")
     expect(sut.infrastructure_branch?).to be true
+  end
+
+  it "correctly recognizes an non infrastructure branch" do
     sut = described_class.new(nil, "feature/branch")
     expect(sut.infrastructure_branch?).to be false
   end

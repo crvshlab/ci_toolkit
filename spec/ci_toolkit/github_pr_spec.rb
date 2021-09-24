@@ -8,7 +8,6 @@ describe CiToolkit::GithubPr do
     sut = described_class.new(100, "crvshlab/v-app-ios", client)
     allow(client).to receive(:pull_request).and_return({ title: "The PR title" })
     expect(sut.title).to be "The PR title"
-    expect(client).to have_received(:pull_request).with("crvshlab/v-app-ios", 100)
   end
 
   it "provides lines of code changed" do
@@ -37,20 +36,13 @@ describe CiToolkit::GithubPr do
     allow(client).to receive(:issue_comments).and_return([{ body: "example text", id: 12_345 }])
     sut = described_class.new(100, "crvshlab/v-app-ios", client)
     sut.delete_comment_containing_text("example text")
-    expect(client).to have_received(:issue_comments).with("crvshlab/v-app-ios", 100)
     expect(client).to have_received(:delete_comment).with("crvshlab/v-app-ios", 12_345)
   end
 
   it "does not delete a comment if it can't find the text" do
     client = instance_spy("client")
-    allow(client).to receive(:issue_comments).and_return(
-      [{ body: "other text", id: 12_345 },
-       { body: nil, id: 12_346 },
-       { id: 12_347 }]
-    )
     sut = described_class.new(100, "crvshlab/v-app-ios", client)
     sut.delete_comment_containing_text("example text")
-    expect(client).to have_received(:issue_comments).with("crvshlab/v-app-ios", 100)
     expect(client).not_to have_received(:delete_comment).with("crvshlab/v-app-ios", 12_345)
   end
 
@@ -61,17 +53,11 @@ describe CiToolkit::GithubPr do
     expect(sut.labels).to eq ["Label name"]
   end
 
-  it "creates a pull request" do
+  it "creates a status check" do
     client = instance_spy("client")
-    allow(client).to receive(:pull_request).and_return({ head: { sha: "commit_sha" } })
     sut = described_class.new(100, "crvshlab/v-app-ios", client)
-    sut.create_status(
-      "success",
-      "Your check name",
-      "https://pathtomoreinformation.aboutyour.check",
-      "Your status description"
-    )
-    expect(client).to have_received(:pull_request).with("crvshlab/v-app-ios", 100)
+    sut.create_status("success", "Your check name",
+                      "https://target.url", "Your status description")
     expect(client).to have_received(:create_status)
   end
 

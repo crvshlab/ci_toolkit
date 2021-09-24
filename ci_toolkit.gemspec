@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
 
   # development dependencies
   spec.add_development_dependency "rspec", "~> 3.2"
+  spec.add_development_dependency "simplecov"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

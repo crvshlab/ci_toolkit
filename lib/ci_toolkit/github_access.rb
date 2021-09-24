@@ -13,7 +13,7 @@ module CiToolkit
     # end
     # Octokit.middleware = stack
 
-    def initialize(app_id, private_key)
+    def initialize(app_id = ENV["CRVSH_BOT_GITHUB_APP_ID"], private_key = ENV["CRVSH_BOT_GITHUB_APP_PRIVATE_KEY"])
       @app_id = app_id.to_i
       @private_key = private_key
     end

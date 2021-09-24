@@ -74,6 +74,8 @@ GEM
       parser (>= 3.0.1.1)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
+    rubocop-rspec (2.5.0)
+      rubocop (~> 1.19)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     sawyer (0.8.2)
@@ -97,6 +99,7 @@ DEPENDENCIES
   rspec (~> 3.2)
   rubocop (~> 1.7)
   rubocop-rake
+  rubocop-rspec
   simplecov
 
 BUNDLED WITH

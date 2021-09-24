@@ -5,7 +5,7 @@ require "ci_toolkit"
 sut = CiToolkit::GithubAccess.new
 
 describe CiToolkit::GithubAccess do
-  it "should provide a valid token" do
+  it "provides a valid token" do
     token = sut.create_token
     expect(token).not_to be_empty
     # noinspection RubyNilAnalysis

@@ -3,7 +3,7 @@
 require "ci_toolkit"
 
 describe CiToolkit::Git do
-  before(:all) do
+  before do
     `rm -rf git_test`
     `mkdir git_test`
     `cd git_test && git init --initial-branch=main`
@@ -13,40 +13,40 @@ describe CiToolkit::Git do
     `cd git_test && git tag -a 0.1 -m "First tag"`
   end
 
-  after(:all) do
+  after do
     `rm -rf git_test`
   end
 
-  it "should provide the latest tag" do
-    sut = CiToolkit::Git.new("git_test")
+  it "provides the latest tag" do
+    sut = described_class.new("git_test")
     expect(sut.latest_tag).to eq "0.1"
   end
 
-  it "should provide the latest tag in current dir" do
-    sut = CiToolkit::Git.new
+  it "provides the latest tag in current dir" do
+    sut = described_class.new
     git_tag = `git describe --abbrev=0`.gsub("\n", "")
     expect(sut.latest_tag).to eq git_tag
   end
 
-  it "should provide the current branch" do
-    sut = CiToolkit::Git.new("git_test")
+  it "provides the current branch" do
+    sut = described_class.new("git_test")
     expect(sut.branch).to eq "main"
   end
 
-  it "should provide the current branch in current dir" do
-    sut = CiToolkit::Git.new(nil, nil)
+  it "provides the current branch in current dir" do
+    sut = described_class.new(nil, nil)
     expect(sut.branch).to eq "main"
   end
 
-  it "should provide the current branch from branch name" do
-    sut = CiToolkit::Git.new(nil, "the-branch")
+  it "provides the current branch from branch name" do
+    sut = described_class.new(nil, "the-branch")
     expect(sut.branch).to eq "the-branch"
   end
 
-  it "should correctly recognize an infrastructure branch" do
-    sut = CiToolkit::Git.new(nil, "infra/branch")
+  it "correctlies recognize an infrastructure branch" do
+    sut = described_class.new(nil, "infra/branch")
     expect(sut.infrastructure_branch?).to be true
-    sut = CiToolkit::Git.new(nil, "feature/branch")
+    sut = described_class.new(nil, "feature/branch")
     expect(sut.infrastructure_branch?).to be false
   end
 end

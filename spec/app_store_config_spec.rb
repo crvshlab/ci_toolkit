@@ -3,13 +3,13 @@
 require "ci_toolkit"
 
 describe CiToolkit::AppStoreConfig do
-  it "should instantiate" do
-    sut = CiToolkit::AppStoreConfig.new
+  it "instantiates" do
+    sut = described_class.new
     expect(sut).not_to be_nil
   end
 
-  it "should have valid defaults" do
-    sut = CiToolkit::AppStoreConfig.new
+  it "has valid defaults" do
+    sut = described_class.new
     expect(sut.target).to eq "SmartLife"
     expect(sut.app_identifier).to eq "com.vodafone.smartlife"
     expect(sut.team_id).to eq "GE7TB7Z856"

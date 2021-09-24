@@ -6,7 +6,7 @@ module CiToolkit
     def initialize(
       github_pr = CiToolkit::GithubPr.new,
       git = CiToolkit::Git.new,
-      ticket_regex_keys = ENV['SUPPORTED_JIRA_PROJECT_KEYS_REGEX']
+      ticket_regex_keys = ENV["SUPPORTED_JIRA_PROJECT_KEYS_REGEX"]
     )
       @github_pr = github_pr
       @git = git

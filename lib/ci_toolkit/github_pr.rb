@@ -5,7 +5,6 @@ require "octokit"
 module CiToolkit
   # Can be used to retrieve information about a PR on Github via the Github API
   class GithubPr
-
     def initialize(
       pr_number = ENV["BITRISE_PULL_REQUEST"],
       repo_slug = "#{ENV["BITRISEIO_GIT_REPOSITORY_OWNER"] || "crvshlab"}/#{ENV["BITRISEIO_GIT_REPOSITORY_SLUG"]}",

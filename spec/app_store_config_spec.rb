@@ -3,14 +3,6 @@
 require "ci_toolkit"
 
 describe CiToolkit::AppStoreConfig do
-  before do
-    # Do nothing
-  end
-
-  after do
-    # Do nothing
-  end
-
   it "should instantiate" do
     sut = CiToolkit::AppStoreConfig.new
     expect(sut).not_to be_nil

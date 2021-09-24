@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+require "ci_toolkit"
+
+describe CiToolkit::DuplicateFilesFinder do
+  it "finds duplicate files" do
+    `echo "This is the text" >> lib/test.txt`
+    `echo "This is the text" >> lib/test1.txt`
+    sut = described_class.new("lib")
+    expect(sut.duplicate_groups).to include %w[lib/test1.txt lib/test.txt]
+    `rm -rf lib/test.txt lib/test1.txt`
+  end
+
+  it "does not find duplicates" do
+    sut = described_class.new
+    expect(sut.duplicate_groups).to eq %w[]
+  end
+
+  it "does not find duplicates that are whitelisted" do
+    `echo "This is the text" >> lib/whitelisted.txt`
+    `echo "This is the text" >> lib/whitelisted1.txt`
+    sut = described_class.new("lib")
+    expect(sut.duplicate_groups).to eq %w[]
+    `rm -rf lib/whitelisted.txt lib/whitelisted1.txt`
+  end
+end

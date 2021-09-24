@@ -88,7 +88,7 @@ describe CiToolkit::PrMessenger do
     expect(pr).to have_received(:comment)
   end
 
-  it "deletes big PR warning" do
+  it "deletes work in progress warning" do
     pr = instance_spy("github_pr")
     text = CiToolkit::PrMessengerText.new
     sut = described_class.new(pr, text)

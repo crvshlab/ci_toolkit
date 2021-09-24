@@ -8,7 +8,5 @@ describe CiToolkit::GithubAccess do
   it "provides a valid token" do
     token = sut.create_token
     expect(token).not_to be_empty
-    # noinspection RubyNilAnalysis
-    expect(token.length).to be 40
   end
 end

@@ -9,10 +9,14 @@ module CiToolkit
 
     def initialize(
       relative_search_path = nil,
-      whitelisted_files = File.exist?("duplicate_files_whitelist.txt") ? File.readlines(
-        "duplicate_files_whitelist.txt",
-        chomp: true
-      ) : [],
+      whitelisted_files = if File.exist?("duplicate_files_whitelist.txt")
+                            File.readlines(
+                              "duplicate_files_whitelist.txt",
+                              chomp: true
+                            )
+                          else
+                            []
+                          end,
       excluded_dirs = ["vendor"]
     )
       @whitelisted_files = whitelisted_files
@@ -43,9 +47,9 @@ module CiToolkit
     def all_files_in_project
       search_dir = ""
       search_dir = "#{@search_path}/" if @search_path
-      files = Dir.glob("#{BASE_DIR}/#{search_dir}**/*").reject! { |f|
+      files = Dir.glob("#{BASE_DIR}/#{search_dir}**/*").reject! do |f|
         File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
-      }
+      end
       @excluded_dirs.each do |dir|
         files.reject! { |f| f[%r{#{dir}/}] }
       end

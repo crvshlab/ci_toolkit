@@ -10,8 +10,8 @@ module CiToolkit
       for_pull_request = !ENV["BITRISE_PULL_REQUEST"].nil?,
       for_cron_job = !ENV["BITRISE_SCHEDULED_BUILD"].nil?
     )
-      @build_number = options.[](:build_number)
-      @build_url = options.[](:build_url)
+      @build_number = options&.[](:build_number)
+      @build_url = options&.[](:build_url)
       @for_pull_request = for_pull_request
       @for_cron_job = for_cron_job
     end

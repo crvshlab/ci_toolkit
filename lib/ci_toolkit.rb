@@ -11,6 +11,7 @@ require "ci_toolkit/github_access"
 require "ci_toolkit/github_pr"
 require "ci_toolkit/git"
 require "ci_toolkit/jira"
+require "ci_toolkit/pr_messenger"
 
 module CiToolkit
   class Error < StandardError; end

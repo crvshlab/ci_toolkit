@@ -7,7 +7,7 @@ describe CiToolkit::PrMessenger do
     pr = instance_spy("github_pr")
     text = instance_spy("pr_messenger_text")
     sut = described_class.new(pr, text)
-    sut.send_build_deployed("build name", "version name")
+    sut.send_build_deployed("build name", "version name", "v2.3.4-build.2345")
     expect(pr).to have_received(:comment)
   end
 

@@ -21,7 +21,7 @@ module CiToolkit
 
     def lines_of_code_changed
       pr = @client.pull_request(@repo_slug, @pr_number)
-      pr.[](:additions) + pr.[](:deletions)
+      pr[:additions] + pr[:deletions]
     end
 
     def comments

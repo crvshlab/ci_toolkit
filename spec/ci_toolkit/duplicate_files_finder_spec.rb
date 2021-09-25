@@ -7,7 +7,7 @@ describe CiToolkit::DuplicateFilesFinder do
     `echo "This is the text" >> lib/test.txt`
     `echo "This is the text" >> lib/test1.txt`
     sut = described_class.new("lib")
-    expect(sut.duplicate_groups).to include %w[lib/test1.txt lib/test.txt]
+    expect(sut.duplicate_groups.length).to be 1
     `rm -rf lib/test.txt lib/test1.txt`
   end
 

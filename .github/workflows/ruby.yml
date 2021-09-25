@@ -34,4 +34,4 @@ jobs:
       run: |
         bundle exec rake
         bundle exec rspec
-    - uses: SonarSource/sonarcloud-github-action@v1.6
+#     - uses: SonarSource/sonarcloud-github-action@v1.6

@@ -32,9 +32,14 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run lint & tests
+      env:
+        CRVSH_BOT_GITHUB_APP_ID: ${{ secrets.CRVSH_BOT_GITHUB_APP_ID }}
+        CRVSH_BOT_GITHUB_APP_PRIVATE_KEY: ${{ secrets.CRVSH_BOT_GITHUB_APP_PRIVATE_KEY }}
+        SONARCLOUD_LOGIN_TOKEN: ${{ secrets.SONARCLOUD_LOGIN_TOKEN }}
       run: |
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
         bundle exec rake
         bundle exec rspec
+
 #     - uses: SonarSource/sonarcloud-github-action@v1.6

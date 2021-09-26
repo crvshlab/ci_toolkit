@@ -1,4 +1,4 @@
-# CiToolkit
+# CiToolkit [![Lint & run tests](https://github.com/crvshlab/ci_toolkit/actions/workflows/lint_and_run_tests.yml/badge.svg)](https://github.com/crvshlab/ci_toolkit/actions/workflows/lint_and_run_tests.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=crvshlab_ci_toolkit&metric=alert_status&token=f10d3b754be5144c5acced94b8f2fe8705045db7)](https://sonarcloud.io/dashboard?id=crvshlab_ci_toolkit) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=crvshlab_ci_toolkit&metric=coverage&token=f10d3b754be5144c5acced94b8f2fe8705045db7)](https://sonarcloud.io/dashboard?id=crvshlab_ci_toolkit) 
 
 A collection of utility classes used to glue information between Github and CI (Bitrise primarily)
 ## Installation

@@ -23,4 +23,12 @@ describe CiToolkit::DuplicateFilesFinder do
     expect(sut.duplicate_groups).to eq %w[]
     `rm -rf lib/whitelisted.txt lib/whitelisted1.txt`
   end
+
+  it "initializes with an empty whitelist if the duplicate_files_whitelist.txt does not exist" do
+    whitelist = File.read("duplicate_files_whitelist.txt")
+    `rm -rf duplicate_files_whitelist.txt`
+    sut = described_class.new
+    expect(sut.duplicate_groups).to eq %w[]
+    File.write("duplicate_files_whitelist.txt", whitelist)
+  end
 end

@@ -114,4 +114,24 @@ describe CiToolkit::GithubPr do
     allow(client).to receive(:pull_request).and_return({ additions: 250, deletions: 251 })
     expect(sut.big?).to be true
   end
+
+  it "finds comment containing text" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:issue_comments).and_return([{ body: "This is a comment with some text" }])
+    expect(sut.find_comment_containing_text("This is a comment")).to eq({ body: "This is a comment with some text" })
+  end
+
+  it "does not find comment a comment if there is no comment containing the search text" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:issue_comments).and_return([{ body: nil }])
+    expect(sut.find_comment_containing_text("This is a comment")).to eq nil
+  end
+
+  it "provides the correct pull request number" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    expect(sut.number).to eq 100
+  end
 end

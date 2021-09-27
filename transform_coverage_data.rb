@@ -22,4 +22,3 @@ json["RSpec"]["coverage"].transform_values! do |value|
 end
 File.write("coverage/.resultset.sonar.json", JSON.dump(json))
 puts "Wrote new coverage json to coverage/.resultset.sonar.json"
-puts `ls -lah coverage`

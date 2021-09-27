@@ -5,22 +5,22 @@ module CiToolkit
   class Build
     def initialize(
       git = CiToolkit::Git.new,
-      config = CiToolkit::BuildConfig.new
+      env = CiToolkit::BitriseEnv.new
     )
       @git = git
-      @config = config
+      @env = env
     end
 
     def url
-      @config.build_url
+      @env.build_url
     end
 
     def number
-      @config.build_number || Time.now.to_i.to_s
+      @env.build_number || Time.now.to_i.to_s
     end
 
     def from_pull_request?
-      @config.for_pull_request?
+      @env.build_from_pr?
     end
 
     def from_develop?
@@ -36,7 +36,23 @@ module CiToolkit
     end
 
     def from_cron_job?
-      @config.for_cron_job?
+      @env.build_from_cron_job?
+    end
+
+    def version
+      version = @git.branch.split("/").last
+      return version if !version.nil? && Gem::Version.correct?(version)
+
+      return @git.latest_tag if Gem::Version.correct?(@git.latest_tag)
+
+      raise StandardError, "Incorrect version supplied. You need to build from a valid \
+release branch with semantic versioning, eg. release/x.y.z"
+    end
+
+    def tag_name(build_number = nil)
+      return "#{version}-build.#{build_number}" if build_number
+
+      version.to_s
     end
   end
 end

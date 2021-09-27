@@ -5,10 +5,10 @@ module CiToolkit
   class PrMessengerText
     def initialize(
       build = CiToolkit::Build.new,
-      app_url = ENV["BITRISE_APP_URL"]
+      env = CiToolkit::BitriseEnv.new
     )
       @build = build
-      @app_url = app_url
+      @app_url = env.app_url
     end
 
     def for_new_build(name, version_name, tag)

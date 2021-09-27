@@ -3,6 +3,8 @@
 module CiToolkit
   # Utility class to parse a Jira ticket from a string
   class Jira
+    attr_reader :ticket
+
     def initialize(
       github_pr = CiToolkit::GithubPr.new,
       git = CiToolkit::Git.new,
@@ -11,10 +13,7 @@ module CiToolkit
       @github_pr = github_pr
       @git = git
       @ticket_regex_keys = ticket_regex_keys
-    end
-
-    def ticket
-      parse_ticket(@github_pr.title) || parse_ticket(@git.branch)
+      @ticket = parse_ticket(@github_pr.title) || parse_ticket(@git.branch)
     end
 
     private

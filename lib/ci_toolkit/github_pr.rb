@@ -6,17 +6,23 @@ module CiToolkit
   # Can be used to retrieve information about a PR on Github via the Github API
   class GithubPr
     def initialize(
-      pr_number = ENV["BITRISE_PULL_REQUEST"],
-      repo_slug = "#{ENV["BITRISEIO_GIT_REPOSITORY_OWNER"] || "crvshlab"}/#{ENV["BITRISEIO_GIT_REPOSITORY_SLUG"]}",
+      env = CiToolkit::BitriseEnv.new,
+      build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",
+                                                       "Latest Prod", "Latest PreProd", "Mock"],
       client = Octokit::Client.new(access_token: CiToolkit::GithubAccess.new.create_token)
     )
-      @pr_number = pr_number
-      @repo_slug = repo_slug
+      @pr_number = env.pull_request_number
+      @repo_slug = env.repository_path
       @client = client
+      @build_types = build_types
     end
 
     def title
       @client.pull_request(@repo_slug, @pr_number).[](:title)
+    end
+
+    def number
+      @pr_number
     end
 
     def lines_of_code_changed
@@ -65,7 +71,7 @@ module CiToolkit
 
     def build_types
       types = []
-      ["Acceptance PreProd", "Acceptance Prod", "Latest Prod", "Latest PreProd", "Mock"].each do |type|
+      @build_types.each do |type|
         types.push(type) if comments.include?("#{type} build") || labels.include?("#{type} build")
       end
       types

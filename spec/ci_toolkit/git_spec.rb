@@ -34,22 +34,25 @@ describe CiToolkit::Git do
   end
 
   it "provides the current branch in current dir" do
-    sut = described_class.new(nil, nil)
+    sut = described_class.new(nil)
     expect(sut.branch).to eq "main"
   end
 
   it "provides the current branch from branch name" do
-    sut = described_class.new(nil, "the-branch")
+    env = CiToolkit::BitriseEnv.new({ git_branch: "the-branch" })
+    sut = described_class.new(nil, env)
     expect(sut.branch).to eq "the-branch"
   end
 
   it "correctly recognizes an infrastructure branch" do
-    sut = described_class.new(nil, "infra/branch")
+    env = CiToolkit::BitriseEnv.new({ git_branch: "infra/branch" })
+    sut = described_class.new(nil, env)
     expect(sut.infrastructure_branch?).to be true
   end
 
   it "correctly recognizes an non infrastructure branch" do
-    sut = described_class.new(nil, "feature/branch")
+    env = CiToolkit::BitriseEnv.new({ git_branch: "feature/branch" })
+    sut = described_class.new(nil, env)
     expect(sut.infrastructure_branch?).to be false
   end
 end

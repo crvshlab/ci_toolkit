@@ -3,8 +3,8 @@
 module CiToolkit
   # Utility class to provide information about git related data
   class Git
-    def initialize(dir = nil, branch = ENV["BITRISE_GIT_BRANCH"])
-      @branch = branch
+    def initialize(dir = nil, env = CiToolkit::BitriseEnv.new)
+      @branch = env.git_branch
       @dir = dir
     end
 

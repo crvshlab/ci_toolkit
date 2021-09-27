@@ -14,4 +14,7 @@ json["RSpec"]["coverage"].transform_keys! do |file|
 
   "/github/workspace/#{path}"
 end
+json["RSpec"]["coverage"].transform_values! do |value|
+  value["lines"]
+end
 File.write("coverage/.resultset.sonar.json", JSON.dump(json))

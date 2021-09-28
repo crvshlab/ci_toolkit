@@ -5,22 +5,13 @@ require "pathname"
 module CiToolkit
   # Finds duplicate files based on md5 hash
   class DuplicateFilesFinder
-    BASE_DIR = File.expand_path("./")
-
     def initialize(
       relative_search_path = nil,
-      whitelisted_files = if File.exist?("duplicate_files_whitelist.txt")
-                            File.readlines(
-                              "duplicate_files_whitelist.txt",
-                              chomp: true
-                            )
-                          else
-                            []
-                          end,
-      excluded_dirs = ["vendor"]
+      whitelist_file = nil,
+      excluded_dirs = []
     )
-      @whitelisted_files = whitelisted_files || []
-      @search_path = relative_search_path
+      @base_dir = select_base_dir(relative_search_path)
+      @whitelisted_files = create_whitelist_from_file(whitelist_file) || []
       @excluded_dirs = excluded_dirs || []
       @duplicated_files = []
       duplicate_map = files_mapped_to_md5_checksum
@@ -38,16 +29,14 @@ module CiToolkit
       all_files_in_project.each do |file|
         md5 = Digest::MD5.hexdigest(File.read(file))
         files = md5_file_map[md5] || (md5_file_map[md5] = [])
-        relative_path = Pathname.new(file).relative_path_from(Pathname.new(BASE_DIR)).to_s
+        relative_path = Pathname.new(file).relative_path_from(Pathname.new(@base_dir)).to_s
         files << relative_path unless @whitelisted_files.include?(relative_path)
       end
       md5_file_map
     end
 
     def all_files_in_project
-      search_dir = ""
-      search_dir = "#{@search_path}/" if @search_path
-      files = Dir.glob("#{BASE_DIR}/#{search_dir}**/*")
+      files = Dir.glob("#{@base_dir}/**/*")
       files.reject! do |f|
         File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
       end
@@ -55,6 +44,22 @@ module CiToolkit
         files.reject! { |f| f[%r{#{dir}/}] }
       end
       files
+    end
+
+    def select_base_dir(relative_search_path)
+      if !relative_search_path.nil? && Dir.exist?(relative_search_path)
+        File.expand_path(relative_search_path)
+      else
+        File.expand_path("./")
+      end
+    end
+
+    def create_whitelist_from_file(whitelist_file)
+      if !whitelist_file.nil? && File.exist?(whitelist_file)
+        File.readlines(whitelist_file, chomp: true)
+      elsif File.exist? "duplicate_files_whitelist.txt"
+        File.readlines("duplicate_files_whitelist.txt", chomp: true)
+      end
     end
   end
 end

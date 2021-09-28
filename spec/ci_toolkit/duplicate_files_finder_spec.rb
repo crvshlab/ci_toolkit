@@ -32,4 +32,19 @@ describe CiToolkit::DuplicateFilesFinder do
   it "does not fail when excluded_dirs is nil" do
     expect { described_class.new(nil, nil, ["vendor"]) }.not_to raise_error
   end
+
+  it "does handle an invalid whitelist.text" do
+    expect { described_class.new(nil, "lib/whitelisting.txt", ["vendor"]) }.not_to raise_error
+  end
+
+  it "does load provided whitelist file" do
+    expect { described_class.new(nil, "duplicate_files_whitelist.txt", ["vendor"]) }.not_to raise_error
+  end
+
+  it "does not fail whithout whitelist file" do
+    whitelist = File.read("duplicate_files_whitelist.txt")
+    `rm -rf duplicate_files_whitelist.txt`
+    expect { described_class.new('.', "duplicate_files_whitelist.txt", ["vendor"]) }.not_to raise_error
+    `echo #{whitelist} >> duplicate_files_whitelist.txt`
+  end
 end

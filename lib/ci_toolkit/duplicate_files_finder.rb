@@ -47,10 +47,13 @@ module CiToolkit
     def all_files_in_project
       search_dir = ""
       search_dir = "#{@search_path}/" if @search_path
+      puts "BASE_DIR: #{BASE_DIR}, search_dir: #{search_dir}"
       files = Dir.glob("#{BASE_DIR}/#{search_dir}**/*")
+      puts "files1: #{files}"
       files.reject! do |f|
         File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
       end
+      puts "files2: #{files}"
       @excluded_dirs.each do |dir|
         files.reject! { |f| f[%r{#{dir}/}] }
       end

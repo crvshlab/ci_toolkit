@@ -44,7 +44,7 @@ describe CiToolkit::DuplicateFilesFinder do
   it "does not fail whithout whitelist file" do
     whitelist = File.read("duplicate_files_whitelist.txt")
     `rm -rf duplicate_files_whitelist.txt`
-    expect { described_class.new('.', "duplicate_files_whitelist.txt", ["vendor"]) }.not_to raise_error
+    expect { described_class.new(".", "duplicate_files_whitelist.txt", ["vendor"]) }.not_to raise_error
     `echo #{whitelist} >> duplicate_files_whitelist.txt`
   end
 end

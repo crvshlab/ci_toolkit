@@ -31,4 +31,8 @@ describe CiToolkit::DuplicateFilesFinder do
     expect(sut.duplicate_groups).to eq %w[]
     File.write("duplicate_files_whitelist.txt", whitelist)
   end
+
+  it "does not fail when excluded_dirs is nil" do
+    expect { described_class.new(nil, nil, nil) }.not_to raise_error
+  end
 end

@@ -8,11 +8,11 @@ module CiToolkit
     def initialize(
       relative_search_path = nil,
       whitelist_file = nil,
-      excluded_dirs = []
+      exclusion_patterns = []
     )
       @base_dir = select_base_dir(relative_search_path)
       @whitelisted_files = create_whitelist_from_file(whitelist_file) || []
-      @excluded_dirs = excluded_dirs || []
+      @exclusion_patterns = exclusion_patterns || []
       @duplicated_files = []
       duplicate_map = files_mapped_to_md5_checksum
       duplicate_map.each { |md5, duplicates| @duplicated_files << duplicates if duplicate_map[md5].count > 1 }
@@ -40,8 +40,8 @@ module CiToolkit
       files.reject! do |f|
         File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
       end
-      @excluded_dirs.each do |dir|
-        files.reject! { |f| f[%r{#{dir}/}] }
+      @exclusion_patterns.each do |pattern|
+        files.reject! { |f| f[/#{pattern}/] }
       end
       files
     end

@@ -62,7 +62,7 @@ module CiToolkit
     end
 
     def body(text)
-      formatted_text = "```\n#{text}\n```"
+      formatted_text = "```\n#{text.to_s.truncate(60_000)}\n```"
       formatted_text = "<details>\n<summary>Details</summary>\n\n#{formatted_text}\n</details>" if text.lines.count > 6
       "#{formatted_text}\n"
     end

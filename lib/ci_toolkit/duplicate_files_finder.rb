@@ -19,9 +19,9 @@ module CiToolkit
                           end,
       excluded_dirs = ["vendor"]
     )
-      @whitelisted_files = whitelisted_files
+      @whitelisted_files = whitelisted_files || []
       @search_path = relative_search_path
-      @excluded_dirs = excluded_dirs
+      @excluded_dirs = excluded_dirs || []
       @duplicated_files = []
       duplicate_map = files_mapped_to_md5_checksum
       duplicate_map.each { |md5, duplicates| @duplicated_files << duplicates if duplicate_map[md5].count > 1 }

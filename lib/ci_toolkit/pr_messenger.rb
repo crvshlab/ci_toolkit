@@ -23,6 +23,7 @@ module CiToolkit
       delete_duplicate_files_report
       report = @messenger_text.create_duplicate_files_report(finder)
       send(@messenger_text.for_duplicated_files_report(report))
+      report
     end
 
     def delete_duplicate_files_report
@@ -32,6 +33,7 @@ module CiToolkit
     def send_lint_report(report)
       delete_lint_report
       send(@messenger_text.for_lint_report(report))
+      report
     end
 
     def delete_lint_report
@@ -41,6 +43,7 @@ module CiToolkit
     def send_big_pr_warning
       delete_big_pr_warning
       send(@messenger_text.big_pr_warning_title)
+      @messenger_text.big_pr_warning_title
     end
 
     def delete_big_pr_warning
@@ -50,6 +53,7 @@ module CiToolkit
     def send_work_in_progress
       delete_work_in_progress
       send(@messenger_text.work_in_progress_title)
+      @messenger_text.work_in_progress_title
     end
 
     def delete_work_in_progress

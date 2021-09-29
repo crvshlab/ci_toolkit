@@ -35,7 +35,7 @@ module CiToolkit
     end
 
     def comment(text)
-      @client.add_comment(@repo_slug, @pr_number, text.truncate(65_500)) # github comment character limit is 65536
+      @client.add_comment(@repo_slug, @pr_number, text[0...65_500]) # github comment character limit is 65536
     end
 
     def delete_comment_containing_text(text)

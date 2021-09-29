@@ -38,7 +38,7 @@ module CiToolkit
     def all_files_in_project
       files = Dir.glob("#{@base_dir}/**/*")
       files.reject! do |f|
-        File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
+        !File.exist?(f) ||File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
       end
       @exclusion_patterns.each do |pattern|
         files.reject! { |f| f[/#{pattern}/] }

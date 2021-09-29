@@ -16,22 +16,25 @@ module CiToolkit
     def initialize(app_id = ENV["CRVSH_BOT_GITHUB_APP_ID"], private_key = ENV["CRVSH_BOT_GITHUB_APP_PRIVATE_KEY"])
       @app_id = app_id.to_i
       @private_key = private_key
+      @client = Octokit::Client.new(bearer_token: jwt_token, auto_paginate: true)
     end
 
     def create_token
-      client = Octokit::Client.new(bearer_token: jwt_token, auto_paginate: true)
-      installation_id = client.find_app_installations(
-        { accept: Octokit::Preview::PREVIEW_TYPES[:integrations] }
-      ).select { |installation| installation[:app_id] == @app_id }.first[:id]
-      return unless installation_id
+      return unless (installation_id = find_app_installation)
 
-      client.create_app_installation_access_token(
+      @client.create_app_installation_access_token(
         installation_id,
         { accept: Octokit::Preview::PREVIEW_TYPES[:integrations] }
       )[:token]
     end
 
     private
+
+    def find_app_installation
+      @client.find_app_installations(
+        { accept: Octokit::Preview::PREVIEW_TYPES[:integrations] }
+      ).select { |installation| installation[:app_id] == @app_id }.first[:id]
+    end
 
     def jwt_token
       JWT.encode(

@@ -10,10 +10,8 @@ module CiToolkit
       git = CiToolkit::Git.new,
       ticket_regex_keys = ENV["SUPPORTED_JIRA_PROJECT_KEYS_REGEX"]
     )
-      @github_pr = github_pr
-      @git = git
       @ticket_regex_keys = ticket_regex_keys
-      @ticket = parse_ticket(@github_pr.title) || parse_ticket(@git.branch)
+      @ticket = parse_ticket(github_pr.nil? ? "" : github_pr.title) || parse_ticket(git.nil? ? "" : git.branch)
     end
 
     private

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ci_toolkit (1.0.9)
+    ci_toolkit (1.0.10)
       jwt
       octokit
       openssl

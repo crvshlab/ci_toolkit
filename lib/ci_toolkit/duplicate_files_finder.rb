@@ -32,11 +32,13 @@ module CiToolkit
         relative_path = Pathname.new(file).relative_path_from(Pathname.new(@base_dir)).to_s
         files << relative_path unless @whitelisted_files.include?(relative_path)
       end
+      puts "md5 map:\n#{md5_file_map}"
       md5_file_map
     end
 
     def all_files_in_project
       files = Dir.glob("#{@base_dir}/**/*")
+      puts "Files after glob:\n#{files}"
       files.reject! do |f|
         !File.exist?(f) || File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
       end

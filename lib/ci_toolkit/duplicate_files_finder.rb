@@ -57,10 +57,10 @@ module CiToolkit
     end
 
     def create_whitelist_from_file(whitelist_file)
-      if !whitelist_file.nil? && File.exist?(whitelist_file)
-        File.readlines(whitelist_file, chomp: true)
-      elsif File.exist? "duplicate_files_whitelist.txt"
-        File.readlines("duplicate_files_whitelist.txt", chomp: true)
+      if !whitelist_file.nil? && File.exist?("#{@base_dir}/#{whitelist_file}")
+        File.readlines("#{@base_dir}/#{whitelist_file}", chomp: true)
+      elsif File.exist? "#{@base_dir}/duplicate_files_whitelist.txt"
+        File.readlines("#{@base_dir}/duplicate_files_whitelist.txt", chomp: true)
       end
     end
   end

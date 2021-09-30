@@ -18,7 +18,7 @@ module CiToolkit
     end
 
     def for_build_failure(reason)
-      "#### Build failed ⛔️\n#{body(reason.to_s)}"
+      "#{build_failure_title}️\n#{body(reason.to_s)}"
     end
 
     def for_duplicated_files_report(report)
@@ -27,6 +27,10 @@ module CiToolkit
 
     def for_lint_report(report)
       "#{lint_report_title}\n#{body(report)}"
+    end
+
+    def build_failure_title
+      "#### Build failed ⛔"
     end
 
     def duplicated_files_title

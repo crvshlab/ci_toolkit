@@ -37,14 +37,14 @@ describe CiToolkit::GithubPr do
     client = instance_spy("client")
     allow(client).to receive(:issue_comments).and_return([{ body: "example text", id: 12_345 }])
     sut = described_class.new(env, [], client)
-    sut.delete_comment_containing_text("example text")
+    sut.delete_comments_including_text("example text")
     expect(client).to have_received(:delete_comment).with("org/repo", 12_345)
   end
 
   it "does not delete a comment if it can't find the text" do
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    sut.delete_comment_containing_text("example text")
+    sut.delete_comments_including_text("example text")
     expect(client).not_to have_received(:delete_comment).with("crvshlab/v-app-ios", 12_345)
   end
 
@@ -119,14 +119,14 @@ describe CiToolkit::GithubPr do
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
     allow(client).to receive(:issue_comments).and_return([{ body: "This is a comment with some text" }])
-    expect(sut.find_comment_containing_text("This is a comment")).to eq({ body: "This is a comment with some text" })
+    expect(sut.find_comments_including_text("This is a comment")).to eq([{ body: "This is a comment with some text" }])
   end
 
   it "does not find comment a comment if there is no comment containing the search text" do
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
     allow(client).to receive(:issue_comments).and_return([{ body: nil }])
-    expect(sut.find_comment_containing_text("This is a comment")).to eq nil
+    expect(sut.find_comments_including_text("This is a comment")).to eq []
   end
 
   it "provides the correct pull request number" do

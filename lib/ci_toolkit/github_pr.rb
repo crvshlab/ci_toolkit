@@ -19,7 +19,7 @@ module CiToolkit
     end
 
     def title
-      client.pull_request(@repo_slug, @pr_number).[](:title)
+      client.pull_request(@repo_slug, @pr_number).[](:title) || ""
     end
 
     def number
@@ -39,21 +39,21 @@ module CiToolkit
       client.add_comment(@repo_slug, @pr_number, text[0...65_500]) # github comment character limit is 65536
     end
 
-    def delete_comment_containing_text(text)
-      comment = find_comment_containing_text(text)
-      delete_comment(comment[:id]) unless comment.nil?
+    def delete_comments_including_text(text)
+      comments = find_comments_including_text(text)
+      comments.each { |comment| delete_comment(comment[:id]) unless comment.nil? }
     end
 
     def delete_comment(comment_id)
       client.delete_comment(@repo_slug, comment_id)
     end
 
-    def find_comment_containing_text(text)
-      comment = nil
+    def find_comments_including_text(text)
+      comments = []
       client.issue_comments(@repo_slug, @pr_number).map do |item|
-        comment = item if item[:body]&.include? text
+        comments << item if item[:body]&.include? text
       end
-      comment
+      comments
     end
 
     def labels

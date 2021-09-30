@@ -32,7 +32,7 @@ describe CiToolkit::PrMessenger do
     text = CiToolkit::PrMessengerText.new
     sut = described_class.new(pr, text)
     sut.delete_duplicate_files_report
-    expect(pr).to have_received(:delete_comment_containing_text).with(text.duplicated_files_title)
+    expect(pr).to have_received(:delete_comments_including_text).with(text.duplicated_files_title)
   end
 
   it "sends the lint report" do
@@ -48,7 +48,7 @@ describe CiToolkit::PrMessenger do
     text = CiToolkit::PrMessengerText.new
     sut = described_class.new(pr, text)
     sut.delete_lint_report
-    expect(pr).to have_received(:delete_comment_containing_text).with(text.lint_report_title)
+    expect(pr).to have_received(:delete_comments_including_text).with(text.lint_report_title)
   end
 
   it "sends big PR warning" do
@@ -64,7 +64,7 @@ describe CiToolkit::PrMessenger do
     text = CiToolkit::PrMessengerText.new
     sut = described_class.new(pr, text)
     sut.delete_big_pr_warning
-    expect(pr).to have_received(:delete_comment_containing_text).with(text.big_pr_warning_title)
+    expect(pr).to have_received(:delete_comments_including_text).with(text.big_pr_warning_title)
   end
 
   it "sends work in progress warning" do
@@ -80,6 +80,6 @@ describe CiToolkit::PrMessenger do
     text = CiToolkit::PrMessengerText.new
     sut = described_class.new(pr, text)
     sut.delete_work_in_progress
-    expect(pr).to have_received(:delete_comment_containing_text).with(text.work_in_progress_title)
+    expect(pr).to have_received(:delete_comments_including_text).with(text.work_in_progress_title)
   end
 end

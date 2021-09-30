@@ -17,7 +17,12 @@ module CiToolkit
     end
 
     def send_ci_failed(reason)
+      delete_ci_failed
       send(@messenger_text.for_build_failure(reason))
+    end
+
+    def delete_ci_failed
+      delete(@messenger_text.build_failure_title)
     end
 
     def send_duplicate_files_report(finder)
@@ -72,7 +77,7 @@ module CiToolkit
     def delete(message)
       return unless @is_connected
 
-      @github_pr.delete_comment_containing_text(message)
+      @github_pr.delete_comments_including_text(message)
     end
   end
 end

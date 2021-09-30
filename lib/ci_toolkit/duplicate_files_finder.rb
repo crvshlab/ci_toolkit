@@ -50,13 +50,9 @@ module CiToolkit
 
     def select_base_dir(relative_search_path)
       if !relative_search_path.nil? && Dir.exist?(relative_search_path)
-        puts "Relative search path is #{relative_search_path}"
         File.expand_path(relative_search_path)
       else
-        pwd = `pwd`
-        puts "Bash pwd is #{pwd}"
-        puts "Ruby pwd is #{Dir.pwd}"
-        File.expand_path(Dir.pwd)
+        File.expand_path(Dir.pwd).gsub("/fastlane")
       end
     end
 

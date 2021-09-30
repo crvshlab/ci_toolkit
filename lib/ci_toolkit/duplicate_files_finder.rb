@@ -11,7 +11,6 @@ module CiToolkit
       exclusion_patterns = []
     )
       @base_dir = select_base_dir(relative_search_path)
-      puts "base_dir is #{@base_dir}"
       @whitelisted_files = create_whitelist_from_file(whitelist_file) || []
       @exclusion_patterns = exclusion_patterns || []
       @duplicated_files = []
@@ -38,7 +37,6 @@ module CiToolkit
 
     def all_files_in_project
       files = Dir.glob("#{@base_dir}/**/*")
-      puts "Files after glob:\n#{files}"
       files.reject! do |f|
         !File.exist?(f) || File.symlink?(f) || File.directory?(f) || File.size?(f).nil?
       end

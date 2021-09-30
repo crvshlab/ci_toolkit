@@ -55,7 +55,6 @@ module CiToolkit
       else
         pwd = `pwd`
         puts "Bash pwd is #{pwd}"
-        Dir.chdir(pwd)
         puts "Ruby pwd is #{Dir.pwd}"
         File.expand_path(Dir.pwd)
       end

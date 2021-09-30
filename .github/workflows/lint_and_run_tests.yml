@@ -34,7 +34,6 @@ jobs:
         CRVSH_BOT_GITHUB_APP_PRIVATE_KEY: ${{ secrets.CRVSH_BOT_GITHUB_APP_PRIVATE_KEY }}
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_LOGIN_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       run: |
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
@@ -54,3 +53,8 @@ jobs:
           -Dsonar.tests=spec/
           -Dsonar.ruby.coverage.reportPaths=coverage/.resultset.sonar.json
           -Dsonar.ruby.coverage.framework=RSpec
+    - name: Build and publish gem
+      uses: jstastny/publish-gem-to-github@master
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        owner: crvshlab

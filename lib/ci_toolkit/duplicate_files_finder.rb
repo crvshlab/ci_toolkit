@@ -11,6 +11,7 @@ module CiToolkit
       exclusion_patterns = []
     )
       @base_dir = select_base_dir(relative_search_path)
+      puts "base_dir is #{@base_dir}"
       @whitelisted_files = create_whitelist_from_file(whitelist_file) || []
       @exclusion_patterns = exclusion_patterns || []
       @duplicated_files = []
@@ -51,7 +52,7 @@ module CiToolkit
       if !relative_search_path.nil? && Dir.exist?(relative_search_path)
         File.expand_path(relative_search_path)
       else
-        File.expand_path(Dir.pwd).gsub("/fastlane")
+        File.expand_path(Dir.pwd)
       end
     end
 

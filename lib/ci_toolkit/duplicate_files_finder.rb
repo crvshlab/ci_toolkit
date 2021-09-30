@@ -32,7 +32,6 @@ module CiToolkit
         relative_path = Pathname.new(file).relative_path_from(Pathname.new(@base_dir)).to_s
         files << relative_path unless @whitelisted_files.include?(relative_path)
       end
-      puts "md5 map:\n#{md5_file_map}"
       md5_file_map
     end
 

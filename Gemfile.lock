@@ -9,7 +9,6 @@ PATH
 
 GEM
   remote: https://rubygems.org/
-  remote: https://rubygems.pkg.github.com/crvshlab/
   specs:
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)

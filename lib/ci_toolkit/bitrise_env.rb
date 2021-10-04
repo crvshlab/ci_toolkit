@@ -16,7 +16,8 @@ module CiToolkit
       repository_owner: ENV["BITRISEIO_GIT_REPOSITORY_OWNER"] || "crvshlab",
       repository_slug: ENV["BITRISEIO_GIT_REPOSITORY_SLUG"],
       app_url: ENV["BITRISE_APP_URL"],
-      git_branch: ENV["BITRISE_GIT_BRANCH"]
+      git_branch: ENV["BITRISE_GIT_BRANCH"],
+      git_commit: ENV["BITRISE_GIT_COMMIT"]
     })
       @build_number = options[:build_number]
       @build_url = options[:build_url]
@@ -26,6 +27,7 @@ module CiToolkit
       @repository_slug = options[:repository_slug]
       @app_url = options[:app_url]
       @git_branch = options[:git_branch]
+      @git_commit = options[:git_commit]
     end
 
     def build_from_pr?

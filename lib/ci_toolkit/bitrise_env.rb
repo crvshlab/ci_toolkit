@@ -8,7 +8,8 @@ module CiToolkit
                 :pull_request_number,
                 :app_url,
                 :git_branch,
-                :app_slug
+                :app_slug,
+                :git_commit
 
     def initialize(options = {
       build_number: ENV["BITRISE_BUILD_NUMBER"],

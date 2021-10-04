@@ -11,6 +11,7 @@ require "ci_toolkit/git"
 require "ci_toolkit/jira"
 require "ci_toolkit/pr_messenger"
 require "ci_toolkit/pr_messenger_text"
+require "ci_toolkit/bitrise_client"
 
 module CiToolkit
   class Error < StandardError; end

@@ -32,6 +32,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
+  spec.add_dependency "faraday"
+  spec.add_dependency "faraday_middleware"
   spec.add_dependency "jwt"
   spec.add_dependency "octokit"
   spec.add_dependency "openssl"

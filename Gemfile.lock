@@ -1,7 +1,9 @@
 PATH
   remote: .
   specs:
-    ci_toolkit (1.0.21)
+    ci_toolkit (1.0.22)
+      faraday
+      faraday_middleware
       jwt
       octokit
       openssl
@@ -34,6 +36,8 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
+    faraday_middleware (1.1.0)
+      faraday (~> 1.0)
     json (2.5.1)
     jwt (2.2.3)
     multipart-post (2.1.1)

@@ -35,7 +35,7 @@ describe CiToolkit::Build do
     expect(sut.from_pull_request?).to eq true
   end
 
-  it "provides show that the build is not a PR if not specified" do
+  it "show that the build is not a PR if not specified" do
     env = CiToolkit::BitriseEnv.new
     sut = described_class.new(double, env)
     expect(sut.from_pull_request?).to eq false

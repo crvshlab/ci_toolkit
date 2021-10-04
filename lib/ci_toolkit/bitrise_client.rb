@@ -52,11 +52,14 @@ module CiToolkit
     end
 
     def find_pull_request_builds(pull_request, branch, commit)
-      builds = @connection&.get("/#{API_VERSION}/apps/#{@app_slug}/builds", {
-                                  branch: branch,
-                                  pull_request_id: pull_request.to_i,
-                                  status: 0 # status: 0 == not finished
-                                })
+      response = @connection&.get("/#{API_VERSION}/apps/#{@app_slug}/builds", {
+                                    branch: branch,
+                                    pull_request_id: pull_request.to_i,
+                                    status: 0 # status: 0 == not finished
+                                  })
+      return [] if response.nil?
+
+      builds = response[:body]
       builds&.select! { |build| build[:commit_hash] == commit }
       builds || []
     end

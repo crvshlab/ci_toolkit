@@ -14,7 +14,7 @@ module CiToolkit
       @app_slug = app_slug
       @connection = faraday
       configure_connection
-      @connection&.use Faraday::Response::Logger
+      @connection&.use Faraday::Response::Logger, nil, { headers: true, bodies: true }
     end
 
     def configure_connection

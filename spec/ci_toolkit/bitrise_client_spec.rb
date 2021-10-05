@@ -3,8 +3,10 @@
 require "rspec"
 require "ci_toolkit"
 
+Payload = Struct.new(:body)
+
 describe CiToolkit::BitriseClient do
-  find_pr_build_response = { response_body: { data: [{ commit_hash: "some_commit_hash", slug: "the_build_slug" }] } }
+  find_pr_build_response = Payload.new({ data: [{ commit_hash: "some_commit_hash", slug: "the_build_slug" }] })
   create_pr_payload = {
     hook_info: { type: "bitrise" },
     build_params: {
@@ -42,7 +44,7 @@ describe CiToolkit::BitriseClient do
 
   it "finds pull request builds with the given commit hash" do
     faraday = instance_spy("faraday")
-    allow(faraday).to receive(:get).and_return({ response_body: { data: [{ commit_hash: "some_commit_hash" }] } })
+    allow(faraday).to receive(:get).and_return(Payload.new({ data: [{ commit_hash: "some_commit_hash" }] }))
     sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
     builds = sut.find_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(builds.length).to be_positive
@@ -50,7 +52,7 @@ describe CiToolkit::BitriseClient do
 
   it "returns empty array if it can't find builds" do
     faraday = instance_spy("faraday")
-    allow(faraday).to receive(:get).and_return({ response_body: { data: [] } })
+    allow(faraday).to receive(:get).and_return(Payload.new({ data: [] }))
     sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
     builds = sut.find_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(builds).to eq []

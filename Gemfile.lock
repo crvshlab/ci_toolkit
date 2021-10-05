@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ci_toolkit (1.2.4)
+    ci_toolkit (1.2.5)
       faraday
       faraday_middleware
       jwt

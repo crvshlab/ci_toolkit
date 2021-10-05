@@ -58,9 +58,16 @@ module CiToolkit
                                     pull_request_id: pull_request.to_i,
                                     status: 0 # status: 0 == not finished
                                   })
-      return [] if response.nil?
+      puts "Response:\n"
+      puts response.inspect
 
-      builds = response[:body]
+      builds = response[:body][:data]
+      filter_builds_by_commit(builds, commit)
+    end
+
+    def filter_builds_by_commit(builds, commit)
+      puts "Builds:\n"
+      puts builds.inspect
       builds&.select! { |build| build[:commit_hash] == commit }
       builds || []
     end

@@ -38,7 +38,7 @@ jobs:
       run: |
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
-        echo "---\n:rubygems_api_key: $RUBYGEMS_API_KEY" >> ~/.gem/credentials
+        echo "---\n:rubygems_api_key: $RUBYGEMS_API_KEY" > ~/.gem/credentials
         chmod 0600 ~/.gem/credentials
         bundle exec rake
         bundle exec rspec

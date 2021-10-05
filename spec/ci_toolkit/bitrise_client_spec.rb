@@ -25,20 +25,20 @@ describe CiToolkit::BitriseClient do
 
   it "has a connection" do
     faraday = instance_spy("faraday")
-    sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
+    sut = described_class.new({ build_number: 654, token: "dummy_token", app_slug: "a3rewrew4s5" }, faraday)
     expect(sut.connection).not_to be nil
   end
 
   it "creates a pull request build" do
     faraday = instance_spy("faraday")
-    sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
+    sut = described_class.new({ build_number: 654, token: "dummy_token", app_slug: "a3rewrew4s5" }, faraday)
     sut.create_pull_request_build(123, "feature/my-pr", "some_commit_hash", "workflow_id_name")
     expect(faraday).to have_received(:post).with("/v0.1/apps/a3rewrew4s5/builds", create_pr_payload)
   end
 
   it "searches for pull request builds on the api" do
     faraday = instance_spy("faraday")
-    sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
+    sut = described_class.new({ build_number: 654, token: "dummy_token", app_slug: "a3rewrew4s5" }, faraday)
     sut.find_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     params = { branch: "feature/my-pr", pull_request_id: 123, status: 0 }
     expect(faraday).to have_received(:get).with("/v0.1/apps/a3rewrew4s5/builds", params)
@@ -47,7 +47,7 @@ describe CiToolkit::BitriseClient do
   it "finds pull request builds with the given commit hash" do
     faraday = instance_spy("faraday")
     allow(faraday).to receive(:get).and_return(Payload.new({ "data" => [{ "commit_hash" => "some_commit_hash" }] }))
-    sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
+    sut = described_class.new({ build_number: 654, token: "dummy_token", app_slug: "a3rewrew4s5" }, faraday)
     builds = sut.find_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(builds.length).to be_positive
   end
@@ -55,7 +55,7 @@ describe CiToolkit::BitriseClient do
   it "returns empty array if it can't find builds" do
     faraday = instance_spy("faraday")
     allow(faraday).to receive(:get).and_return(Payload.new({ data: [] }))
-    sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
+    sut = described_class.new({ build_number: 654, token: "dummy_token", app_slug: "a3rewrew4s5" }, faraday)
     builds = sut.find_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(builds).to eq []
   end
@@ -63,7 +63,7 @@ describe CiToolkit::BitriseClient do
   it "aborts builds with a given commit hash" do
     faraday = instance_spy("faraday")
     allow(faraday).to receive(:get).and_return(find_pr_build_response)
-    sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
+    sut = described_class.new({ build_number: 654, token: "dummy_token", app_slug: "a3rewrew4s5" }, faraday)
     sut.abort_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(faraday).to have_received(:post).with("/v0.1/apps/a3rewrew4s5/builds/the_build_slug/abort", abort_pr_payload)
   end

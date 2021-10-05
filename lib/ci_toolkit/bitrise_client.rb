@@ -9,13 +9,16 @@ module CiToolkit
     API_VERSION = "v0.1"
     attr_reader :connection
 
-    def initialize(
-      token = ENV["BITRISE_TOKEN"],
-      app_slug = ENV["BITRISE_APP_SLUG"],
-      faraday = nil
-    )
-      @token = token
-      @app_slug = app_slug
+    # noinspection Metrics/ParameterLists
+    def initialize(options = {
+      build_number: ENV["BITRISE_BUILD_NUMBER"],
+      token: ENV["BITRISE_TOKEN"],
+      app_slug: ENV["BITRISE_APP_SLUG"]
+    },
+                   faraday = nil)
+      @build_number = options[:build_number].to_i
+      @token = options[:token]
+      @app_slug = options[:app_slug]
       @connection = faraday
       configure_connection
       @connection&.use Faraday::Response::Logger, nil, { headers: true, bodies: true }
@@ -72,7 +75,7 @@ module CiToolkit
     def filter_builds_by_commit(builds, commit)
       puts "Builds:\n"
       puts builds.inspect
-      builds&.select! { |build| build["commit_hash"] == commit }
+      builds&.select! { |build| build["commit_hash"] == commit || build["build_number"] == @build_number }
       builds || []
     end
   end

@@ -61,7 +61,7 @@ module CiToolkit
       puts "Response:\n"
       puts response.inspect
 
-      builds = response[:body][:data]
+      builds = response[:response_body][:data]
       filter_builds_by_commit(builds, commit)
     end
 

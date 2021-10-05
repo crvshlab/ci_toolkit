@@ -67,13 +67,4 @@ describe CiToolkit::BitriseClient do
     sut.abort_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(faraday).to have_received(:post).with("/v0.1/apps/a3rewrew4s5/builds/the_build_slug/abort", abort_pr_payload)
   end
-
-  # it "finds builds" do
-  #   sut = described_class.new
-  #   sut.find_pull_request_builds(
-  #     ENV["BITRISE_PULL_REQUEST"],
-  #     "infra/new-bitrise-workflow",
-  #     "431fad4dbc9325cfc09ce5ea76169099c4a6baea"
-  #   )
-  # end
 end

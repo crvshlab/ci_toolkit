@@ -21,7 +21,6 @@ module CiToolkit
       @app_slug = options[:app_slug]
       @connection = faraday
       configure_connection
-      @connection&.use Faraday::Response::Logger, nil, { headers: true, bodies: true }
     end
 
     def configure_connection
@@ -65,16 +64,11 @@ module CiToolkit
                                     pull_request_id: pull_request.to_i,
                                     status: 0 # status: 0 == not finished
                                   })
-      puts "Response:\n"
-      puts response.inspect
-
       builds = response.body["data"]
       filter_builds_by_commit(builds, commit)
     end
 
     def filter_builds_by_commit(builds, commit)
-      puts "Builds:\n"
-      puts builds.inspect
       builds&.select! { |build| build["commit_hash"] == commit && build["build_number"] != @build_number }
       builds || []
     end

@@ -5,7 +5,7 @@
 # This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
 # For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
 
-name: Lint & run tests
+name: Lint, test & release
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
     branches: [ main ]
 
 jobs:
-  lint_and_test:
+  lint_test_and_release:
 
     runs-on: ubuntu-latest
 
@@ -28,17 +28,20 @@ jobs:
       with:
         ruby-version: 2.6
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Run lint & tests
+    - name: Lint, tests & release
       env:
         CRVSH_BOT_GITHUB_APP_ID: ${{ secrets.CRVSH_BOT_GITHUB_APP_ID }}
         CRVSH_BOT_GITHUB_APP_PRIVATE_KEY: ${{ secrets.CRVSH_BOT_GITHUB_APP_PRIVATE_KEY }}
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_LOGIN_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
       run: |
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
+        echo "---\n:rubygems_api_key: $RUBYGEMS_API_KEY" >> ~/.gem/credentials
         bundle exec rake
         bundle exec rspec
+        bundle exec rake release
         bundle exec ruby transform_coverage_data.rb
     - name: Sonarcloud
       uses: SonarSource/sonarcloud-github-action@v1.6
@@ -53,8 +56,3 @@ jobs:
           -Dsonar.tests=spec/
           -Dsonar.ruby.coverage.reportPaths=coverage/.resultset.sonar.json
           -Dsonar.ruby.coverage.framework=RSpec
-    - name: Build and publish gem
-      uses: jstastny/publish-gem-to-github@master
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        owner: crvshlab

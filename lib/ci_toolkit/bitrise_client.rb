@@ -9,7 +9,11 @@ module CiToolkit
     API_VERSION = "v0.1"
     attr_reader :connection
 
-    def initialize(token = ENV["BITRISE_TOKEN"], app_slug = ENV["BITRISE_APP_SLUG"], faraday = nil)
+    def initialize(
+      token = ENV["BITRISE_TOKEN"],
+      app_slug = ENV["BITRISE_APP_SLUG"],
+      faraday = nil
+    )
       @token = token
       @app_slug = app_slug
       @connection = faraday
@@ -26,8 +30,8 @@ module CiToolkit
       )
       @connection.use Faraday::Request::UrlEncoded
       @connection.use Faraday::Request::Retry
-      @connection.use FaradayMiddleware::ParseJson
       @connection.use FaradayMiddleware::EncodeJson
+      @connection.use FaradayMiddleware::ParseJson
       @connection.use FaradayMiddleware::FollowRedirects
     end
 
@@ -46,7 +50,7 @@ module CiToolkit
 
     def abort_pull_request_builds(pull_request, branch, commit)
       find_pull_request_builds(pull_request, branch, commit).each do |build|
-        @connection&.post("/#{API_VERSION}/apps/#{@app_slug}/builds/#{build[:slug]}/abort", {
+        @connection&.post("/#{API_VERSION}/apps/#{@app_slug}/builds/#{build["slug"]}/abort", {
                             abort_reason: "Aborting due to other build failed for pull request #{pull_request}"
                           })
       end
@@ -61,14 +65,14 @@ module CiToolkit
       puts "Response:\n"
       puts response.inspect
 
-      builds = response.body[:data]
+      builds = response.body["data"]
       filter_builds_by_commit(builds, commit)
     end
 
     def filter_builds_by_commit(builds, commit)
       puts "Builds:\n"
       puts builds.inspect
-      builds&.select! { |build| build[:commit_hash] == commit }
+      builds&.select! { |build| build["commit_hash"] == commit }
       builds || []
     end
   end

@@ -6,7 +6,9 @@ require "ci_toolkit"
 Payload = Struct.new(:body)
 
 describe CiToolkit::BitriseClient do
-  find_pr_build_response = Payload.new({ data: [{ commit_hash: "some_commit_hash", slug: "the_build_slug" }] })
+  find_pr_build_response = Payload.new({ "data" => [
+                                         { "commit_hash" => "some_commit_hash", "slug" => "the_build_slug" }
+                                       ] })
   create_pr_payload = {
     hook_info: { type: "bitrise" },
     build_params: {
@@ -44,7 +46,7 @@ describe CiToolkit::BitriseClient do
 
   it "finds pull request builds with the given commit hash" do
     faraday = instance_spy("faraday")
-    allow(faraday).to receive(:get).and_return(Payload.new({ data: [{ commit_hash: "some_commit_hash" }] }))
+    allow(faraday).to receive(:get).and_return(Payload.new({ "data" => [{ "commit_hash" => "some_commit_hash" }] }))
     sut = described_class.new("dummy_token", "a3rewrew4s5", faraday)
     builds = sut.find_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(builds.length).to be_positive
@@ -65,4 +67,13 @@ describe CiToolkit::BitriseClient do
     sut.abort_pull_request_builds(123, "feature/my-pr", "some_commit_hash")
     expect(faraday).to have_received(:post).with("/v0.1/apps/a3rewrew4s5/builds/the_build_slug/abort", abort_pr_payload)
   end
+
+  # it "finds builds" do
+  #   sut = described_class.new
+  #   sut.find_pull_request_builds(
+  #     ENV["BITRISE_PULL_REQUEST"],
+  #     "infra/new-bitrise-workflow",
+  #     "431fad4dbc9325cfc09ce5ea76169099c4a6baea"
+  #   )
+  # end
 end

@@ -40,6 +40,7 @@ jobs:
         git config --global user.name "Your Name"
         echo "---\n:rubygems_api_key: $RUBYGEMS_API_KEY" > ~/.gem/credentials
         chmod 0600 ~/.gem/credentials
+        cat ~/.gem/credentials
         bundle exec rake
         bundle exec rspec
         bundle exec rake release

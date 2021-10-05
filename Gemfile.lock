@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ci_toolkit (1.3.2)
+    ci_toolkit (1.3.3)
       faraday
       faraday_middleware
       jwt
@@ -39,7 +39,7 @@ GEM
     faraday_middleware (1.1.0)
       faraday (~> 1.0)
     json (2.5.1)
-    jwt (2.2.3)
+    jwt (2.3.0)
     multipart-post (2.1.1)
     octokit (4.21.0)
       faraday (>= 0.9)

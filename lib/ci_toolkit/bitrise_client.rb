@@ -75,7 +75,7 @@ module CiToolkit
     def filter_builds_by_commit(builds, commit)
       puts "Builds:\n"
       puts builds.inspect
-      builds&.select! { |build| build["commit_hash"] == commit || build["build_number"] == @build_number }
+      builds&.select! { |build| build["commit_hash"] == commit && build["build_number"] != @build_number }
       builds || []
     end
   end

@@ -69,13 +69,13 @@ describe CiToolkit::BitriseClient do
   end
 
   it "filters builds by commit and the build number" do
-    sut = described_class.new({ build_number: 342, token: "some_token"}, double)
+    sut = described_class.new({ build_number: 342, token: "some_token" }, double)
     builds = sut.filter_builds_by_commit([{ "commit_hash" => "the_hash", "build_number" => 342 }], "the_hash")
     expect(builds.length).to be 0
   end
 
   it "configures the connection if no faraday is provided" do
-    sut = described_class.new({ build_number: 342, token: "some_token"}, nil)
+    sut = described_class.new({ build_number: 342, token: "some_token" }, nil)
     expect(sut.connection).not_to be nil
   end
 end

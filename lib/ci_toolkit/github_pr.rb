@@ -13,6 +13,7 @@ module CiToolkit
     )
       @pr_number = env.pull_request_number
       @repo_slug = env.repository_path
+      @commit_sha = env.git_commit
       @_client = client
       @build_types = build_types
       @access = CiToolkit::GithubAccess.new
@@ -61,13 +62,18 @@ module CiToolkit
     end
 
     def create_status(state, context, target_url, description)
-      ref = client.pull_request(@repo_slug, @pr_number).[](:head).[](:sha)
       client.create_status(
         @repo_slug,
-        ref,
+        @commit_sha,
         state,
         { context: context, target_url: target_url, description: description }
       )
+    end
+
+    def get_status(context)
+      client.statuses(@repo_slug, @commit_sha).each do |status|
+        return status if status[:context] == context
+      end
     end
 
     def build_types

@@ -46,6 +46,15 @@ module CiToolkit
       delete(@messenger_text.lint_report_title)
     end
 
+    def send_realm_modified_warning
+      delete_realm_modified_warning
+      send(@messenger_text.realm_modified_warning_title)
+    end
+
+    def delete_realm_modified_warning
+      delete(@messenger_text.realm_modified_warning_title)
+    end
+
     def send_big_pr_warning
       delete_big_pr_warning
       send(@messenger_text.big_pr_warning_title)

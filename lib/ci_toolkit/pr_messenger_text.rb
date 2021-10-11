@@ -41,6 +41,10 @@ module CiToolkit
       "#### Swiftlint report 🕵️‍♀️"
     end
 
+    def realm_modified_warning_title
+      warning_with_message("Realm module modified. Did you remember to add migrations?")
+    end
+
     def big_pr_warning_title
       warning_with_message("Big PR")
     end

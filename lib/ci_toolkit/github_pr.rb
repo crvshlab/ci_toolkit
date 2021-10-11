@@ -61,6 +61,10 @@ module CiToolkit
       client.labels_for_issue(@repo_slug, @pr_number).map { |item| item[:name] }
     end
 
+    def files
+      client.pull_request_files(@repo_slug, @pr_number)
+    end
+
     def create_status(state, context, target_url, description)
       client.create_status(
         @repo_slug,
@@ -94,6 +98,10 @@ module CiToolkit
 
     def big?
       lines_of_code_changed > 500
+    end
+
+    def realm_module_modified?
+      files&.select { |file| file[:filename]&.start_with? "cache/" }&.length&.positive?
     end
 
     private

@@ -16,6 +16,8 @@ module CiToolkit
       end
 
       def jwt_token
+        return if @private_key.nil?
+
         JWT.encode(
           {
             iat: Time.now.to_i,

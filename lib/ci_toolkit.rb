@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "ci_toolkit/version"
-
 require "ci_toolkit/bitrise_env"
 require "ci_toolkit/build"
 require "ci_toolkit/build_status"

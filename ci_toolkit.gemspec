@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "lib/ci_toolkit/version"
-
 Gem::Specification.new do |spec|
   spec.name          = "ci_toolkit"
-  spec.version       = CiToolkit::VERSION
+  spec.version       = "1.3.16"
   spec.authors       = ["Gero Keller"]
   spec.email         = ["gero.f.keller@gmail.com"]
 

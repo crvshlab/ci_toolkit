@@ -29,6 +29,11 @@ describe CiToolkit::PrMessengerText do
                                                                           sut.lint_report_title
   end
 
+  it "provides realm modified warning" do
+    sut = described_class.new(build, env)
+    expect(sut.realm_modified_warning_title).to include "Realm module modified"
+  end
+
   it "provides formatted footer" do
     sut = described_class.new(build, env)
     expect(sut.footer).to include "https://build.url", build.number.to_s, build.url

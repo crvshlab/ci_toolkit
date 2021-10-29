@@ -41,6 +41,27 @@ describe CiToolkit::GithubPr do
     expect(client).to have_received(:delete_comment).with("org/repo", 12_345)
   end
 
+  it "checks for files modified in the realm module" do
+    client = instance_spy("client")
+    allow(client).to receive(:pull_request_files).and_return([{ filename: "cache/realm" }])
+    sut = described_class.new(env, [], client)
+    expect(sut).to be_realm_module_modified
+  end
+
+  it "correctly identifies that the realm module was not modified" do
+    client = instance_spy("client")
+    allow(client).to receive(:pull_request_files).and_return([{ filename: "a_different_file_name.jpg" }])
+    sut = described_class.new(env, [], client)
+    expect(sut).not_to be_realm_module_modified
+  end
+
+  it "does not error if the file doesn't have a filename" do
+    client = instance_spy("client")
+    allow(client).to receive(:pull_request_files).and_return([{}])
+    sut = described_class.new(env, [], client)
+    expect(sut).not_to be_realm_module_modified
+  end
+
   it "does not delete a comment if it can't find the text" do
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
@@ -133,5 +154,19 @@ describe CiToolkit::GithubPr do
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
     expect(sut.number).to eq 100
+  end
+
+  it "gets the status of a check" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:statuses).and_return([{ context: "check context" }])
+    expect(sut.get_status("check context")).not_to be_nil
+  end
+
+  it "provides a nil status if there is no check with the given context" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:statuses).and_return([{ context: "check context" }])
+    expect(sut.get_status("a different context")).to be_nil
   end
 end

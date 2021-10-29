@@ -42,7 +42,7 @@ module CiToolkit
 
     def delete_comments_including_text(text)
       comments = find_comments_including_text(text)
-      comments.each { |comment| delete_comment(comment[:id]) unless comment.nil? }
+      comments.each { |comment| delete_comment(comment[:id]) }
     end
 
     def delete_comment(comment_id)
@@ -78,6 +78,7 @@ module CiToolkit
       client.statuses(@repo_slug, @commit_sha).each do |status|
         return status if status[:context] == context
       end
+      nil
     end
 
     def build_types
@@ -101,7 +102,8 @@ module CiToolkit
     end
 
     def realm_module_modified?
-      files&.select { |file| file[:filename]&.start_with? "cache/" }&.length&.positive?
+      modified_files = files.select { |file| file[:filename]&.start_with? "cache/" }
+      modified_files.length.positive?
     end
 
     private

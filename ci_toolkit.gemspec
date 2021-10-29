@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "ci_toolkit"
-  spec.version       = "1.3.17"
+  spec.version       = "1.3.18"
   spec.authors       = ["Gero Keller"]
   spec.email         = ["gero.f.keller@gmail.com"]
 

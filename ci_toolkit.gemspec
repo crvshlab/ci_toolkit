@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "ci_toolkit"
-  spec.version       = "1.3.18"
+  spec.version       = "1.3.19"
   spec.authors       = ["Gero Keller"]
   spec.email         = ["gero.f.keller@gmail.com"]
 
@@ -29,7 +29,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Uncomment to register a new dependency of your gem
   spec.add_dependency "faraday"
   spec.add_dependency "faraday_middleware"
   spec.add_dependency "jwt"
@@ -37,14 +36,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency "openssl"
   spec.add_dependency "time"
 
-  # development dependencies
   spec.add_development_dependency "rspec", "~> 3.2"
   spec.add_development_dependency "rubocop", "~> 1.7"
   spec.add_development_dependency "rubocop-rake"
   spec.add_development_dependency "rubocop-rspec"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "simplecov-json"
-
-  # For more information and examples about making a new gem, checkout our
-  # guide at: https://bundler.io/guides/creating_gem.html
 end

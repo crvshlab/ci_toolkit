@@ -6,12 +6,13 @@ require "jwt"
 module CiToolkit
   # Utility class that provides an access token that can be used with the Github API
   class GithubBot
+    # Provides a jwt token for authentication. Sores the private key and app id for the bot
     class Credentials
       attr_reader :app_id
 
       def initialize(app_id = ENV["CRVSH_BOT_GITHUB_APP_ID"], private_key = ENV["CRVSH_BOT_GITHUB_APP_PRIVATE_KEY"])
         @app_id = app_id.to_i
-        @private_key = private_key  
+        @private_key = private_key
       end
 
       def jwt_token

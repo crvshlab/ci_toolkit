@@ -16,7 +16,7 @@ module CiToolkit
       @commit_sha = env.git_commit
       @_client = client
       @build_types = build_types
-      @access = CiToolkit::GithubAccess.new
+      @bot = CiToolkit::GithubBot.new
     end
 
     def title
@@ -110,7 +110,7 @@ module CiToolkit
 
     def client
       @_client = Octokit::Client.new if @_client.nil?
-      @_client.access_token = @access.create_token if @_client.access_token.nil?
+      @_client.access_token = @bot.create_token if @_client.access_token.nil?
 
       @_client
     end

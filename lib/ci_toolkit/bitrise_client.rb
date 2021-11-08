@@ -13,12 +13,14 @@ module CiToolkit
     def initialize(options = {
       build_number: ENV["BITRISE_BUILD_NUMBER"],
       token: ENV["BITRISE_TOKEN"],
-      app_slug: ENV["BITRISE_APP_SLUG"]
+      app_slug: ENV["BITRISE_APP_SLUG"],
+      build_slug: ENV["BITRISE_BUILD_SLUG"]
     },
                    faraday = nil)
       @build_number = options[:build_number].to_i
       @token = options[:token]
       @app_slug = options[:app_slug]
+      @build_slug = options[:build_slug]
       @connection = faraday || create_connection
     end
 
@@ -51,6 +53,8 @@ module CiToolkit
 
     def abort_pull_request_builds(pull_request, branch, commit = nil)
       find_pull_request_builds(pull_request, branch, commit).each do |build|
+        next if build["slug"] == @build_slug
+
         @connection.post("/#{API_VERSION}/apps/#{@app_slug}/builds/#{build["slug"]}/abort", {
                            abort_reason: "Aborting due to other build failed for pull request #{pull_request}"
                          })

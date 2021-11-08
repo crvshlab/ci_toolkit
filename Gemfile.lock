@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ci_toolkit (1.4.4)
+    ci_toolkit (1.4.5)
       faraday
       faraday_middleware
       jwt
@@ -46,7 +46,7 @@ GEM
     octokit (4.21.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    openssl (2.1.2)
+    openssl (2.2.1)
       ipaddr
     parallel (1.21.0)
     parser (3.0.2.0)

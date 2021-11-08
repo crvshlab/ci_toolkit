@@ -8,7 +8,7 @@ module CiToolkit
     def initialize(
       env = CiToolkit::BitriseEnv.new,
       build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",
-                                                       "Latest Prod", "Latest PreProd", "Mock"],
+                                                       "Latest Prod", "Latest PreProd", "Mock", "Design System"],
       client = Octokit::Client.new
     )
       @pr_number = env.pull_request_number

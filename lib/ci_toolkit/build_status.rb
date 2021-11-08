@@ -46,5 +46,9 @@ module CiToolkit
       build_counter = description[%r{(\d/\d)}] || "0/0"
       { num_finished: build_counter.split("/")[0].to_i, num_total: build_counter.split("/")[1].to_i }
     end
+
+    def error
+      @github.create_status("error", @context, @env.app_url, "Building failed")
+    end
   end
 end

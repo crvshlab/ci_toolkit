@@ -49,7 +49,7 @@ module CiToolkit
                        })
     end
 
-    def abort_pull_request_builds(pull_request, branch, commit)
+    def abort_pull_request_builds(pull_request, branch, commit = nil)
       find_pull_request_builds(pull_request, branch, commit).each do |build|
         @connection.post("/#{API_VERSION}/apps/#{@app_slug}/builds/#{build["slug"]}/abort", {
                            abort_reason: "Aborting due to other build failed for pull request #{pull_request}"
@@ -57,14 +57,15 @@ module CiToolkit
       end
     end
 
-    def find_pull_request_builds(pull_request, branch, commit)
+    def find_pull_request_builds(pull_request, branch, commit = nil)
       response = @connection.get("/#{API_VERSION}/apps/#{@app_slug}/builds", {
                                    branch: branch,
                                    pull_request_id: pull_request.to_i,
                                    status: 0 # status: 0 == not finished
                                  })
-      builds = response.body["data"]
-      filter_builds_by_commit(builds, commit)
+      builds = response.body["data"] || []
+      builds = filter_builds_by_commit(builds, commit) unless commit.nil?
+      builds
     end
 
     def filter_builds_by_commit(builds, commit)

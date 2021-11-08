@@ -84,7 +84,10 @@ module CiToolkit
     def build_types
       types = []
       @build_types.each do |type|
-        types.push(type) if comments.include?("#{type} build") || labels.include?("#{type} build")
+        if comments.include?("#{type} build") || labels.include?("#{type} build")
+          comments.include?(type) || labels.include?(type)
+          types.push(type)
+        end
       end
       types
     end

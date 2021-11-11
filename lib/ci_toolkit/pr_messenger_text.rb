@@ -12,9 +12,9 @@ module CiToolkit
     end
 
     def for_new_build(name, version_name, tag)
-      "#### New `#{name}` build deployed 🚀\nVersion **#{version_name}** with
-        build number **#{@build.number}** on tag **#{tag}** deployed
-        from [this](#{@build.url}) build"
+      "#### New `#{name}` build deployed 🚀\nVersion **#{version_name}** with\
+ build number **#{@build.number}** on tag **#{tag}** deployed\
+ from [this](#{@build.url}) build"
     end
 
     def for_build_failure(reason)

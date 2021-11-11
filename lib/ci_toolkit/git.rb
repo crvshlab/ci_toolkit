@@ -9,7 +9,7 @@ module CiToolkit
     end
 
     def latest_tag
-      describe = "git describe --abbrev=0"
+      describe = "git describe --tags --abbrev=0"
       return `#{describe}`.gsub("\n", "") unless @dir
 
       `cd #{@dir} && #{describe}`.gsub("\n", "")

@@ -50,9 +50,9 @@ release branch with semantic versioning, eg. release/x.y.z"
     end
 
     def tag_name(build_number = nil)
-      return "#{version}-build.#{build_number}" if build_number
+      return version.to_s if version.include?("-build.") || build_number.nil?
 
-      version.to_s
+      "#{version}-build.#{build_number}"
     end
   end
 end

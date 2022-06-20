@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
-require "octokit"
+require "gitlab"
 
 module CiToolkit
   # Can be used to retrieve information about a PR on Github via the Github API
-  class GithubPr < DvcsPr
+  class GitlabPr < DvcsPr
     def initialize(
       env = CiToolkit::BitriseEnv.new,
       build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",
                                                        "Latest Prod", "Latest PreProd", "Mock", "Design System"],
-      client = Octokit::Client.new
+
+      client = Gitlab.client(endpoint: ENV["GITLAB_API_URL"] || "",
+                             private_token: ENV["GITLAB_USER_PRIVATE_TOKEN"] || "")
     )
       super()
       @pr_number = env.pull_request_number
@@ -21,7 +23,7 @@ module CiToolkit
     end
 
     def title
-      client.pull_request(@repo_slug, @pr_number).[](:title) || ""
+      client.merge_request(@repo_slug, @pr_number).title || ""
     end
 
     def number
@@ -29,45 +31,46 @@ module CiToolkit
     end
 
     def lines_of_code_changed
-      pr = client.pull_request(@repo_slug, @pr_number)
-      pr[:additions] + pr[:deletions]
+      pr = client.merge_request(@repo_slug, @pr_number)
+      pr.changes_count
     end
 
     def comments
-      client.issue_comments(@repo_slug, @pr_number).map { |item| item[:body] }
+      client.merge_request_notes(@repo_slug, @pr_number).map(&:body)
     end
 
     def comment(text)
-      client.add_comment(@repo_slug, @pr_number, text[0...65_500]) # github comment character limit is 65536
+      # github comment character limit is 65536
+      client.create_merge_request_note(@repo_slug, @pr_number, text[0...65_500])
     end
 
     def delete_comments_including_text(text)
       comments = find_comments_including_text(text)
-      comments.each { |comment| delete_comment(comment[:id]) }
+      comments.each { |comment| delete_comment(comment.id) }
     end
 
     def delete_comment(comment_id)
-      client.delete_comment(@repo_slug, comment_id)
+      client.delete_merge_request_note(@repo_slug, @pr_number, comment_id)
     end
 
     def find_comments_including_text(text)
       comments = []
-      client.issue_comments(@repo_slug, @pr_number).map do |item|
-        comments << item if item[:body]&.include? text
+      client.merge_request_notes(@repo_slug, @pr_number).map do |item|
+        comments << item if item.body&.include? text
       end
       comments
     end
 
     def labels
-      client.labels_for_issue(@repo_slug, @pr_number).map { |item| item[:name] }
+      client.merge_request(@repo_slug, @pr_number).labels.map { |item| item }
     end
 
     def files
-      client.pull_request_files(@repo_slug, @pr_number)
+      client.merge_request_changes(@repo_slug, @pr_number)
     end
 
     def create_status(state, context, target_url, description)
-      client.create_status(
+      client.update_commit_status(
         @repo_slug,
         @commit_sha,
         state,
@@ -76,8 +79,8 @@ module CiToolkit
     end
 
     def get_status(context)
-      client.statuses(@repo_slug, @commit_sha).each do |status|
-        return status if status[:context] == context
+      client.commit_status(@repo_slug, @commit_sha).each do |status|
+        return status if status.name == context
       end
       nil
     end
@@ -106,15 +109,15 @@ module CiToolkit
     end
 
     def realm_module_modified?
-      modified_files = files.select { |file| file[:filename]&.start_with? "cache/" }
+      modified_files = files.select { |file| file&.old_path&.start_with? "cache/" }
       modified_files.length.positive?
     end
 
     private
 
     def client
-      @_client = Octokit::Client.new if @_client.nil?
-      @_client.access_token = @bot.create_token if @_client.access_token.nil?
+      @_client = GitLab::Client.new if @_client.nil?
+      # @_client.access_token = @bot.create_token if @_client.access_token.nil?
 
       @_client
     end

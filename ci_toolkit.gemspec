@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "faraday"
   spec.add_dependency "faraday_middleware"
+  spec.add_dependency "gitlab"
   spec.add_dependency "jwt"
   spec.add_dependency "octokit"
   spec.add_dependency "openssl"

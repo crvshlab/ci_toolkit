@@ -42,16 +42,3 @@ jobs:
         bundle exec rspec
         bundle exec rake release
         bundle exec ruby transform_coverage_data.rb
-    - name: Sonarcloud
-      uses: SonarSource/sonarcloud-github-action@v1.6
-      env:
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_LOGIN_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        args: >
-          -Dsonar.organization=crvsh
-          -Dsonar.projectKey=crvshlab_ci_toolkit
-          -Dsonar.sources=lib/
-          -Dsonar.tests=spec/
-          -Dsonar.ruby.coverage.reportPaths=coverage/.resultset.sonar.json
-          -Dsonar.ruby.coverage.framework=RSpec

@@ -4,7 +4,7 @@ require "gitlab"
 
 module CiToolkit
   # Can be used to retrieve information about a PR on Github via the Github API
-  class GitlabPr
+  class GitlabPr < DvcsPr
     def initialize(
       env = CiToolkit::BitriseEnv.new,
       build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",
@@ -12,6 +12,7 @@ module CiToolkit
 
       client = Gitlab.client(endpoint: ENV["GITLAB_API_URL"], private_token: ENV["GITLAB_USER_PRIVATE_TOKEN"])
     )
+      super()
       @pr_number = env.pull_request_number
       @repo_slug = env.repository_path
       @commit_sha = env.git_commit
@@ -34,11 +35,12 @@ module CiToolkit
     end
 
     def comments
-      client.merge_request_notes(@repo_slug, @pr_number).map { |item| item.body }
+      client.merge_request_notes(@repo_slug, @pr_number).map(&:body)
     end
 
     def comment(text)
-      client.create_merge_request_note(@repo_slug, @pr_number, text[0...65_500]) # github comment character limit is 65536
+      # github comment character limit is 65536
+      client.create_merge_request_note(@repo_slug, @pr_number, text[0...65_500])
     end
 
     def delete_comments_including_text(text)
@@ -114,7 +116,7 @@ module CiToolkit
 
     def client
       @_client = GitLab::Client.new if @_client.nil?
-      #@_client.access_token = @bot.create_token if @_client.access_token.nil?
+      # @_client.access_token = @bot.create_token if @_client.access_token.nil?
 
       @_client
     end

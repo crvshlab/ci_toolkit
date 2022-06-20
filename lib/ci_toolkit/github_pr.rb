@@ -11,6 +11,7 @@ module CiToolkit
                                                        "Latest Prod", "Latest PreProd", "Mock", "Design System"],
       client = Octokit::Client.new
     )
+      super()
       @pr_number = env.pull_request_number
       @repo_slug = env.repository_path
       @commit_sha = env.git_commit

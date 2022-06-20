@@ -11,26 +11,25 @@ module AbstractInterface
     klass.send(:extend, AbstractInterface::Methods)
   end
 
+  # Use this to enforce that implementing class do implemented the needed contract
   module Methods
-
     def api_not_implemented(klass, method_name = nil)
       if method_name.nil?
-        caller.first.match(/in \`(.+)\'/)
-        method_name = $1
+        caller.first.match(/in `(.+)'/)
+        method_name = Regexp.last_match(1)
       end
-      raise AbstractInterface::InterfaceNotImplementedError.new("#{klass.class.name} needs to implement '#{method_name}' for interface #{self.name}!")
+      raise AbstractInterface::InterfaceNotImplementedError,
+            "#{klass.class.name} needs to implement '#{method_name}' for interface #{name}!"
     end
-
   end
-  
 end
 
 module CiToolkit
-  # This needs to be implemented if you want to implement a distribution version control system be used by 
+  # This needs to be implemented if you want to implement a distribution version control system be used by
   # ci_toolkit. Similar to GithubPr and GitlabPr classes
   class DvcsPr
     include AbstractInterface
-    
+
     def title
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
@@ -42,32 +41,24 @@ module CiToolkit
     def lines_of_code_changed
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
-    
+
     def comments
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
-    def comment(text)
+    def comment(_text)
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
-    def delete_comments_including_text(text)
+    def delete_comments_including_text(_text)
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
-    def comment(text)
+    def delete_comment(_comment_id)
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
-    def delete_comments_including_text(text)
-      CiToolkit::DvcsPr.api_not_implemented(self)
-    end
-
-    def delete_comment(comment_id)
-      CiToolkit::DvcsPr.api_not_implemented(self)
-    end
-
-    def find_comments_including_text(text)
+    def find_comments_including_text(_text)
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
@@ -79,11 +70,11 @@ module CiToolkit
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
-    def create_status(state, context, target_url, description)
+    def create_status(_state, _context, _target_url, _description)
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
-    def get_status(context)
+    def get_status(_context)
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
 
@@ -107,5 +98,4 @@ module CiToolkit
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
   end
-
 end

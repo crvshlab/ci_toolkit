@@ -2,7 +2,7 @@
 
 # Credits: https://metabates.com/2011/02/07/building-interfaces-and-abstract-classes-in-ruby/
 module AbstractInterface
-
+  # Use this if you want to enforce some form of contract for an implementing class
   class InterfaceNotImplementedError < NoMethodError
   end
 
@@ -26,7 +26,8 @@ module AbstractInterface
 end
 
 module CiToolkit
-
+  # This needs to be implemented if you want to implement a distribution version control system be used by 
+  # ci_toolkit. Similar to GithubPr and GitlabPr classes
   class DvcsPr
     include AbstractInterface
     

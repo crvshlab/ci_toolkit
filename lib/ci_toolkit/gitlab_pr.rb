@@ -10,7 +10,7 @@ module CiToolkit
       build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",
                                                        "Latest Prod", "Latest PreProd", "Mock", "Design System"],
 
-      client = Gitlab.client(endpoint: "https://gitlab.com/api/v4", private_token: "glpat-PyXxzywXzRXA94z8cU4g")
+      client = Gitlab.client(endpoint: ENV["GITLAB_API_URL"], private_token: ENV["GITLAB_USER_PRIVATE_TOKEN"])
     )
       @pr_number = env.pull_request_number
       @repo_slug = env.repository_path
@@ -38,7 +38,7 @@ module CiToolkit
     end
 
     def comment(text)
-      client.create_merge_request_notes(@repo_slug, @pr_number, body: text[0...65_500]) # github comment character limit is 65536
+      client.create_merge_request_note(@repo_slug, @pr_number, text[0...65_500]) # github comment character limit is 65536
     end
 
     def delete_comments_including_text(text)

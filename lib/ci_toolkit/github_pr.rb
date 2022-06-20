@@ -4,7 +4,7 @@ require "octokit"
 
 module CiToolkit
   # Can be used to retrieve information about a PR on Github via the Github API
-  class GithubPr
+  class GithubPr < DvcsPr
     def initialize(
       env = CiToolkit::BitriseEnv.new,
       build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",

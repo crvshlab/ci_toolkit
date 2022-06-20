@@ -10,7 +10,7 @@ module CiToolkit
       build_types = ENV["BUILD_TYPES"]&.split(/,/) || ["BluetoothDemo", "Acceptance PreProd", "Acceptance Prod",
                                                        "Latest Prod", "Latest PreProd", "Mock", "Design System"],
 
-      client = Gitlab.client(endpoint: ENV["GITLAB_API_URL"], private_token: ENV["GITLAB_USER_PRIVATE_TOKEN"])
+      client = Gitlab.client(endpoint: ENV["GITLAB_API_URL"] || "", private_token: ENV["GITLAB_USER_PRIVATE_TOKEN"] || "" )
     )
       super()
       @pr_number = env.pull_request_number
@@ -108,7 +108,7 @@ module CiToolkit
     end
 
     def realm_module_modified?
-      modified_files = files.select { |file| file.old_path&.start_with? "cache/" }
+      modified_files = files.select { |file| file&.old_path&.start_with? "cache/" }
       modified_files.length.positive?
     end
 

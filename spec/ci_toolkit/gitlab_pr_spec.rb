@@ -2,27 +2,37 @@
 
 require "ci_toolkit"
 
+private
+
+def parse(json)
+  body = JSON.load(json)
+  obj =  Gitlab::ObjectifiedHash.new(body)
+end
+
 describe CiToolkit::GitlabPr do
   env = CiToolkit::BitriseEnv.new({ pull_request_number: 100, repository_owner: "org", repository_slug: "repo" })
 
   it "provides a title" do
+    obj = parse(JSON.unparse(title: "The PR title"))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:pull_request).and_return({ title: "The PR title" })
-    expect(sut.title).to be "The PR title"
+    allow(client).to receive(:merge_request).and_return(obj)
+    expect(sut.title).to eq "The PR title"
   end
 
   it "provides lines of code changed" do
+    obj =  parse(JSON.unparse(changes_count: 20))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:pull_request).and_return({ additions: 10, deletions: 10 })
+    allow(client).to receive(:merge_request).and_return(obj)
     expect(sut.lines_of_code_changed).to be 20
   end
 
   it "has comments" do
+    obj = parse(JSON.unparse(body: "This is the comment text"))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:issue_comments).and_return([{ body: "This is the comment text" }])
+    allow(client).to receive(:merge_request_notes).and_return([obj])
     expect(sut.comments).to eq ["This is the comment text"]
   end
 
@@ -30,34 +40,38 @@ describe CiToolkit::GitlabPr do
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
     sut.comment("my new text")
-    expect(client).to have_received(:add_comment).with("org/repo", 100, "my new text")
+    expect(client).to have_received(:create_merge_request_note).with("org/repo", 100, "my new text")
   end
 
   it "deletes a comment with text" do
+    obj = parse(JSON.unparse(body: "example text", id: 12_345))
     client = instance_spy("client")
-    allow(client).to receive(:issue_comments).and_return([{ body: "example text", id: 12_345 }])
+    allow(client).to receive(:merge_request_notes).and_return([obj])
     sut = described_class.new(env, [], client)
     sut.delete_comments_including_text("example text")
-    expect(client).to have_received(:delete_comment).with("org/repo", 12_345)
+    expect(client).to have_received(:delete_merge_request_note).with("org/repo", 100, 12_345)
   end
 
   it "checks for files modified in the realm module" do
+    obj = parse(JSON.unparse(old_path: "cache/realm"))
     client = instance_spy("client")
-    allow(client).to receive(:pull_request_files).and_return([{ filename: "cache/realm" }])
+    allow(client).to receive(:merge_request_changes).and_return([obj])
     sut = described_class.new(env, [], client)
     expect(sut).to be_realm_module_modified
   end
 
   it "correctly identifies that the realm module was not modified" do
+    obj = parse(JSON.unparse(old_path: "nodb"))
     client = instance_spy("client")
-    allow(client).to receive(:pull_request_files).and_return([{ filename: "a_different_file_name.jpg" }])
+    allow(client).to receive(:merge_request_changes).and_return([obj])
     sut = described_class.new(env, [], client)
     expect(sut).not_to be_realm_module_modified
   end
 
   it "does not error if the file doesn't have a filename" do
+    obj = parse(JSON.unparse(old_path: "cachess"))
     client = instance_spy("client")
-    allow(client).to receive(:pull_request_files).and_return([{}])
+    allow(client).to receive(:merge_request_changes).and_return([obj])
     sut = described_class.new(env, [], client)
     expect(sut).not_to be_realm_module_modified
   end
@@ -70,8 +84,9 @@ describe CiToolkit::GitlabPr do
   end
 
   it "provides labels" do
+    obj = parse(JSON.unparse(labels:["Label name"]))
     client = instance_spy("client")
-    allow(client).to receive(:labels_for_issue).and_return([{ name: "Label name" }])
+    allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut.labels).to eq ["Label name"]
   end
@@ -81,72 +96,82 @@ describe CiToolkit::GitlabPr do
     sut = described_class.new(env, [], client)
     sut.create_status("success", "Your check name",
                       "https://target.url", "Your status description")
-    expect(client).to have_received(:create_status)
+    expect(client).to have_received(:update_commit_status)
   end
 
   it "finds the build types from PR comments" do
+    obj = parse(JSON.unparse(labels:["WIP"]))
+    obj2 = parse(JSON.unparse(body: "build1 build"))
     client = instance_spy("client")
-    allow(client).to receive(:labels_for_issue).and_return([{ name: "WIP" }])
-    allow(client).to receive(:issue_comments).and_return([{ body: "build1 build" }])
+    allow(client).to receive(:merge_request).and_return(obj)
+    allow(client).to receive(:merge_request_notes).and_return([obj2])
     sut = described_class.new(env, %w[build1 build2], client)
     expect(sut.build_types).to eq %w[build1]
   end
 
   it "finds the build types from PR labels" do
+    obj = parse(JSON.unparse(labels:["build2 build"]))
+    obj2 = parse(JSON.unparse(body: "Just a comment"))
     client = instance_spy("client")
-    allow(client).to receive(:issue_comments).and_return([{ body: "Just a comment" }])
-    allow(client).to receive(:labels_for_issue).and_return([{ name: "build2 build" }])
+    allow(client).to receive(:merge_request_notes).and_return([obj2])
+    allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, %w[build1 build2], client)
     expect(sut.build_types).to eq ["build2"]
   end
 
   it "knows if PR is labeled as infrastructure work" do
+    obj = parse(JSON.unparse(title: "title", labels:["Infra"]))
     client = instance_spy("client")
-    allow(client).to receive(:labels_for_issue).and_return([{ name: "Infra" }])
+    allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut.infrastructure_work?).to be true
   end
 
   it "knows if PR has a title showing infrastructure work" do
+    obj = parse(JSON.unparse(title:"[INFRA]"))
     client = instance_spy("client")
-    allow(client).to receive(:pull_request).and_return({ title: "[INFRA]" })
+    allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut.infrastructure_work?).to be true
   end
 
   it "knows if PR is labeled as work in progress" do
+    obj = parse(JSON.unparse(title: "The PR title", labels:["WIP"]))
     client = instance_spy("client")
-    allow(client).to receive(:pull_request).and_return({ title: "The PR title" })
-    allow(client).to receive(:labels_for_issue).and_return([{ name: "WIP" }])
+    allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut.work_in_progress?).to be true
   end
 
   it "knows if PR has a title showing work in progress" do
+    obj = parse(JSON.unparse(title: "[WIP]"))
     client = instance_spy("client")
-    allow(client).to receive(:pull_request).and_return({ title: "[WIP]" })
+    allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut.work_in_progress?).to be true
   end
 
   it "knows if the PR is big" do
+    obj =  parse(JSON.unparse(changes_count: 501))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:pull_request).and_return({ additions: 250, deletions: 251 })
+    allow(client).to receive(:merge_request).and_return(obj)
     expect(sut.big?).to be true
   end
 
   it "finds comment containing text" do
+    obj = parse(JSON.unparse(body: "This is a comment with some text"))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:issue_comments).and_return([{ body: "This is a comment with some text" }])
-    expect(sut.find_comments_including_text("This is a comment")).to eq([{ body: "This is a comment with some text" }])
+    allow(client).to receive(:merge_request_notes).and_return([obj])
+    expect(sut.find_comments_including_text("This is a comment")).to eq([obj])
   end
 
   it "does not find comment a comment if there is no comment containing the search text" do
+    obj = parse(JSON.unparse(body: nil))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:issue_comments).and_return([{ body: nil }])
+    allow(client).to receive(:merge_request_notes).and_return([obj])
     expect(sut.find_comments_including_text("This is a comment")).to eq []
   end
 
@@ -157,16 +182,18 @@ describe CiToolkit::GitlabPr do
   end
 
   it "gets the status of a check" do
+    obj = parse(JSON.unparse(name: "check context"))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:statuses).and_return([{ context: "check context" }])
+    allow(client).to receive(:commit_status).and_return([obj])
     expect(sut.get_status("check context")).not_to be_nil
   end
 
   it "provides a nil status if there is no check with the given context" do
+    obj = parse(JSON.unparse(name: "check context"))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
-    allow(client).to receive(:statuses).and_return([{ context: "check context" }])
+    allow(client).to receive(:commit_status).and_return([obj])
     expect(sut.get_status("a different context")).to be_nil
   end
 end

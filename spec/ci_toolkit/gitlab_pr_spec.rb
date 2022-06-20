@@ -44,9 +44,8 @@ describe CiToolkit::GitlabPr do
   end
 
   it "deletes a comment with text" do
-    obj = parse(JSON.unparse(body: "example text", id: 12_345))
     client = instance_spy("client")
-    allow(client).to receive(:merge_request_notes).and_return([obj])
+    allow(client).to receive(:merge_request_notes).and_return([parse(JSON.unparse(body: "example text", id: 12_345))])
     sut = described_class.new(env, [], client)
     sut.delete_comments_including_text("example text")
     expect(client).to have_received(:delete_merge_request_note).with("org/repo", 100, 12_345)
@@ -100,21 +99,17 @@ describe CiToolkit::GitlabPr do
   end
 
   it "finds the build types from PR comments" do
-    obj = parse(JSON.unparse(labels: ["WIP"]))
-    obj2 = parse(JSON.unparse(body: "build1 build"))
     client = instance_spy("client")
-    allow(client).to receive(:merge_request).and_return(obj)
-    allow(client).to receive(:merge_request_notes).and_return([obj2])
+    allow(client).to receive(:merge_request).and_return(parse(JSON.unparse(labels: ["WIP"])))
+    allow(client).to receive(:merge_request_notes).and_return([parse(JSON.unparse(body: "build1 build"))])
     sut = described_class.new(env, %w[build1 build2], client)
     expect(sut.build_types).to eq %w[build1]
   end
 
   it "finds the build types from PR labels" do
-    obj = parse(JSON.unparse(labels: ["build2 build"]))
-    obj2 = parse(JSON.unparse(body: "Just a comment"))
     client = instance_spy("client")
-    allow(client).to receive(:merge_request_notes).and_return([obj2])
-    allow(client).to receive(:merge_request).and_return(obj)
+    allow(client).to receive(:merge_request_notes).and_return([parse(JSON.unparse(body: "Just a comment"))])
+    allow(client).to receive(:merge_request).and_return(parse(JSON.unparse(labels: ["build2 build"])))
     sut = described_class.new(env, %w[build1 build2], client)
     expect(sut.build_types).to eq ["build2"]
   end

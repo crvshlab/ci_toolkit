@@ -5,8 +5,8 @@ require "ci_toolkit"
 private
 
 def parse(json)
-  body = JSON.load(json)
-  obj =  Gitlab::ObjectifiedHash.new(body)
+  body = JSON.parse(json)
+  Gitlab::ObjectifiedHash.new(body)
 end
 
 describe CiToolkit::GitlabPr do
@@ -84,7 +84,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "provides labels" do
-    obj = parse(JSON.unparse(labels:["Label name"]))
+    obj = parse(JSON.unparse(labels: ["Label name"]))
     client = instance_spy("client")
     allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
@@ -100,7 +100,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "finds the build types from PR comments" do
-    obj = parse(JSON.unparse(labels:["WIP"]))
+    obj = parse(JSON.unparse(labels: ["WIP"]))
     obj2 = parse(JSON.unparse(body: "build1 build"))
     client = instance_spy("client")
     allow(client).to receive(:merge_request).and_return(obj)
@@ -110,7 +110,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "finds the build types from PR labels" do
-    obj = parse(JSON.unparse(labels:["build2 build"]))
+    obj = parse(JSON.unparse(labels: ["build2 build"]))
     obj2 = parse(JSON.unparse(body: "Just a comment"))
     client = instance_spy("client")
     allow(client).to receive(:merge_request_notes).and_return([obj2])
@@ -120,7 +120,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "knows if PR is labeled as infrastructure work" do
-    obj = parse(JSON.unparse(title: "title", labels:["Infra"]))
+    obj = parse(JSON.unparse(title: "title", labels: ["Infra"]))
     client = instance_spy("client")
     allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
@@ -128,7 +128,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "knows if PR has a title showing infrastructure work" do
-    obj = parse(JSON.unparse(title:"[INFRA]"))
+    obj = parse(JSON.unparse(title: "[INFRA]"))
     client = instance_spy("client")
     allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)
@@ -136,7 +136,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "knows if PR is labeled as work in progress" do
-    obj = parse(JSON.unparse(title: "The PR title", labels:["WIP"]))
+    obj = parse(JSON.unparse(title: "The PR title", labels: ["WIP"]))
     client = instance_spy("client")
     allow(client).to receive(:merge_request).and_return(obj)
     sut = described_class.new(env, [], client)

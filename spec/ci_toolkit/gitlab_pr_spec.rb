@@ -68,7 +68,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "does not error if the file doesn't have a filename" do
-    obj = parse(JSON.unparse(old_path: "cachess"))
+    obj = parse(JSON.unparse(old_path: nil))
     client = instance_spy("client")
     allow(client).to receive(:merge_request_changes).and_return([obj])
     sut = described_class.new(env, [], client)

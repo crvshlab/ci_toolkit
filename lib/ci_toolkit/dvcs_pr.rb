@@ -102,4 +102,15 @@ module CiToolkit
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
   end
+
+  # Use this to provide commit status state for github or gitlab as
+  # values for the two services are different
+  # It uses the ENV["DVCS_SERVICE"] to decide which DVCS to use.
+  class DvcsPrUtil
+    def self.status_state(service = ENV["DVCS_SERVICE"])
+      status = "error"
+      status = "failed" if service == "gitlab"
+      status
+    end
+  end
 end

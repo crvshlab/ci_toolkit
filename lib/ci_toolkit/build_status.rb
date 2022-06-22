@@ -40,8 +40,8 @@ module CiToolkit
       @github.create_status(state, @context, @env.app_url, "Finished building #{num_finished}/#{num_total}")
     end
 
-    def error
-      @github.create_status("error", @context, @env.app_url, "Building failed")
+    def error(state = CiToolkit::DvcsPrUtil.status_state)
+      @github.create_status(state, @context, @env.app_url, "Building failed")
     end
 
     private

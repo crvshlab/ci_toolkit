@@ -6,7 +6,7 @@ module CiToolkit
     attr_reader :ticket
 
     def initialize(
-      github_pr = CiToolkit::GithubPr.new,
+      github_pr = CiToolkit::DvcsPrFactory.create(CiToolkit::BitriseEnv.new),
       git = CiToolkit::Git.new,
       ticket_regex_keys = ENV["SUPPORTED_JIRA_PROJECT_KEYS_REGEX"]
     )

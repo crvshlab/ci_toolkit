@@ -35,4 +35,18 @@ describe CiToolkit::BuildStatus do
     sut.increment
     expect(github).to have_received(:create_status).with("success", "Builds", env.app_url, "Finished building 4/4")
   end
+
+  it "updates commit status of github with error" do
+    github = instance_spy("github")
+    sut = described_class.new("Builds", github)
+    sut.error(CiToolkit::DvcsPrUtil.status_state("github"))
+    expect(github).to have_received(:create_status).with("error", "Builds", env.app_url, "Building failed")
+  end
+
+  it "updates commit status of gitlab with failed" do
+    github = instance_spy("github")
+    sut = described_class.new("Builds", github)
+    sut.error(CiToolkit::DvcsPrUtil.status_state("gitlab"))
+    expect(github).to have_received(:create_status).with("failed", "Builds", env.app_url, "Building failed")
+  end
 end

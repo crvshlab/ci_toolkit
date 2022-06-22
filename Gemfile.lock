@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ci_toolkit (1.5.3)
+    ci_toolkit (1.5.4)
       faraday
       faraday_middleware
       gitlab

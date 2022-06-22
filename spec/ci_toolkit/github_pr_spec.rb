@@ -169,4 +169,18 @@ describe CiToolkit::GithubPr do
     allow(client).to receive(:statuses).and_return([{ context: "check context" }])
     expect(sut.get_status("a different context")).to be_nil
   end
+
+  it "gets the description of a commit status" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:statuses).and_return([{ context: "check context", description: "Building description" }])
+    expect(sut.get_status_description("check context")).to eq "Building description"
+  end
+
+  it "provides nil for description of a commit status" do
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:statuses).and_return([{ context: "check context", description: nil }])
+    expect(sut.get_status_description("check context")).to be_nil
+  end
 end

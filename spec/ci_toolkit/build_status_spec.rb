@@ -22,7 +22,7 @@ describe CiToolkit::BuildStatus do
 
   it "increments the build counter" do
     github = instance_spy("github")
-    allow(github).to receive(:get_status).and_return({ description: "Finished building 0/4" })
+    allow(github).to receive(:get_status_description).with("Builds").and_return("Finished building 0/4")
     sut = described_class.new("Builds", github)
     sut.increment
     expect(github).to have_received(:create_status).with("pending", "Builds", env.app_url, "Finished building 1/4")
@@ -30,7 +30,7 @@ describe CiToolkit::BuildStatus do
 
   it "increments the build counter and succeeds" do
     github = instance_spy("github")
-    allow(github).to receive(:get_status).and_return({ description: "Finished building 3/4" })
+    allow(github).to receive(:get_status_description).with("Builds").and_return("Finished building 3/4")
     sut = described_class.new("Builds", github)
     sut.increment
     expect(github).to have_received(:create_status).with("success", "Builds", env.app_url, "Finished building 4/4")

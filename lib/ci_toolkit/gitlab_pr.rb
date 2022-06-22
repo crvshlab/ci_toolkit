@@ -74,7 +74,7 @@ module CiToolkit
         @repo_slug,
         @commit_sha,
         state,
-        { context: context, target_url: target_url, description: description }
+        { name: context, target_url: target_url, description: description }
       )
     end
 
@@ -111,6 +111,13 @@ module CiToolkit
     def realm_module_modified?
       modified_files = files.select { |file| file&.old_path&.start_with? "cache/" }
       modified_files.length.positive?
+    end
+
+    def get_status_description(context)
+      status = get_status(context)
+      return if status.nil?
+
+      status.description
     end
 
     private

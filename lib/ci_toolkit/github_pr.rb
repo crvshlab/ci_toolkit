@@ -110,6 +110,13 @@ module CiToolkit
       modified_files.length.positive?
     end
 
+    def get_status_description(context)
+      status = get_status(context)
+      return if status.nil?
+
+      status[:description]
+    end
+
     private
 
     def client

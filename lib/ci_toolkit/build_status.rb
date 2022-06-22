@@ -47,10 +47,9 @@ module CiToolkit
     private
 
     def load_counter
-      status = @github.get_status(@context)
-      return if status.nil?
+      description = @github.get_status_description(@context)
+      return if description.nil?
 
-      description = status[:description]
       build_counter = description[%r{(\d/\d)}] || "0/0"
       { num_finished: build_counter.split("/")[0].to_i, num_total: build_counter.split("/")[1].to_i }
     end

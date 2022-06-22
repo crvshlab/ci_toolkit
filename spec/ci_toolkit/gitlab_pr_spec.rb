@@ -191,4 +191,20 @@ describe CiToolkit::GitlabPr do
     allow(client).to receive(:commit_status).and_return([obj])
     expect(sut.get_status("a different context")).to be_nil
   end
+
+  it "gets the description of a commit status" do
+    obj = parse(JSON.unparse(description: "Building description", name: "check context"))
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:commit_status).and_return([obj])
+    expect(sut.get_status_description("check context")).to eq "Building description"
+  end
+
+  it "gets nil for description of a commit status" do
+    obj = parse(JSON.unparse(description: nil, name: "check context"))
+    client = instance_spy("client")
+    sut = described_class.new(env, [], client)
+    allow(client).to receive(:commit_status).and_return([obj])
+    expect(sut.get_status_description("check context")).to be_nil
+  end
 end

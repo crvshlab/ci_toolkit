@@ -97,5 +97,9 @@ module CiToolkit
     def realm_module_modified?
       CiToolkit::DvcsPr.api_not_implemented(self)
     end
+
+    def get_status_description(_context)
+      CiToolkit::DvcsPr.api_not_implemented(self)
+    end
   end
 end

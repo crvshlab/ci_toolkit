@@ -4,7 +4,7 @@ module CiToolkit
   # Sends messages to a Github PR for predefined build events
   class PrMessenger
     def initialize(
-      github_pr = CiToolkit::GithubPr.new,
+      github_pr = CiToolkit::DvcsPrFactory.create(CiToolkit::BitriseEnv.new),
       messenger_text = CiToolkit::PrMessengerText.new
     )
       @github_pr = github_pr

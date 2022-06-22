@@ -4,7 +4,7 @@ module CiToolkit
   # allows to have a combined build status for all builds that are triggered for a pull request
   # it uses the description of the status check on Github to parse the number of builds remaining and total
   class BuildStatus
-    def initialize(context = "Builds", github = CiToolkit::GithubPr.new, env = CiToolkit::BitriseEnv.new)
+    def initialize(context = "Builds", github = CiToolkit::DvcsPrFactory.create(CiToolkit::BitriseEnv.new), env = CiToolkit::BitriseEnv.new)
       @context = context
       @github = github
       @env = env

@@ -66,7 +66,7 @@ module CiToolkit
     end
 
     def files
-      client.merge_request_changes(@repo_slug, @pr_number)
+      client.merge_request_changes(@repo_slug, @pr_number).changes
     end
 
     def create_status(state, context, target_url, description)
@@ -117,8 +117,6 @@ module CiToolkit
 
     def client
       @_client = GitLab::Client.new if @_client.nil?
-      # @_client.access_token = @bot.create_token if @_client.access_token.nil?
-
       @_client
     end
   end

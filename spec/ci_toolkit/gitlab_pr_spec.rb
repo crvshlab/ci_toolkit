@@ -52,25 +52,25 @@ describe CiToolkit::GitlabPr do
   end
 
   it "checks for files modified in the realm module" do
-    obj = parse(JSON.unparse(old_path: "cache/realm"))
+    obj = parse(JSON.unparse(changes: [old_path: "cache/realm"]))
     client = instance_spy("client")
-    allow(client).to receive(:merge_request_changes).and_return([obj])
+    allow(client).to receive(:merge_request_changes).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut).to be_realm_module_modified
   end
 
   it "correctly identifies that the realm module was not modified" do
-    obj = parse(JSON.unparse(old_path: "nodb"))
+    obj = parse(JSON.unparse(changes: [old_path: "fastlane/files"]))
     client = instance_spy("client")
-    allow(client).to receive(:merge_request_changes).and_return([obj])
+    allow(client).to receive(:merge_request_changes).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut).not_to be_realm_module_modified
   end
 
   it "does not error if the file doesn't have a filename" do
-    obj = parse(JSON.unparse(old_path: nil))
+    obj = parse(JSON.unparse(changes: []))
     client = instance_spy("client")
-    allow(client).to receive(:merge_request_changes).and_return([obj])
+    allow(client).to receive(:merge_request_changes).and_return(obj)
     sut = described_class.new(env, [], client)
     expect(sut).not_to be_realm_module_modified
   end

@@ -20,12 +20,20 @@ describe CiToolkit::BuildStatus do
     expect(github).to have_received(:create_status).with("success", "Builds", env.build_url, "No builds assigned")
   end
 
-  it "increments the build counter" do
+  it "increments the build counter for github" do
     github = instance_spy("github")
     allow(github).to receive(:get_status_description).with("Builds").and_return("Finished building 0/4")
     sut = described_class.new("Builds", github)
-    sut.increment
+    sut.increment(CiToolkit::DvcsPrUtil.status_state_pending("github"))
     expect(github).to have_received(:create_status).with("pending", "Builds", env.app_url, "Finished building 1/4")
+  end
+
+  it "increments the build counter for gitlab" do
+    github = instance_spy("github")
+    allow(github).to receive(:get_status_description).with("Builds").and_return("Finished building 0/4")
+    sut = described_class.new("Builds", github)
+    sut.increment(CiToolkit::DvcsPrUtil.status_state_pending("gitlab"))
+    expect(github).to have_received(:create_status).with("running", "Builds", env.app_url, "Finished building 1/4")
   end
 
   it "increments the build counter and succeeds" do

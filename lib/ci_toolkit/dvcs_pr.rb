@@ -112,5 +112,11 @@ module CiToolkit
       status = "failed" if service == "gitlab"
       status
     end
+
+    def self.status_state_pending(service = ENV["DVCS_SERVICE"])
+      status = "pending"
+      status = "running" if service == "gitlab"
+      status
+    end
   end
 end

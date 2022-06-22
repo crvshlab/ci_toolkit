@@ -27,14 +27,14 @@ module CiToolkit
       @github.create_status(state, @context, target_url, desc)
     end
 
-    def increment
+    def increment(status = CiToolkit::DvcsPrUtil.status_state_pending)
       counter = load_counter
       return if counter.nil?
 
       num_finished = counter[:num_finished] + 1
       num_total = counter[:num_total]
 
-      state = "pending"
+      state = status
       state = "success" if num_finished == num_total
 
       @github.create_status(state, @context, @env.app_url, "Finished building #{num_finished}/#{num_total}")

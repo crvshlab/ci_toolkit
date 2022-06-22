@@ -147,7 +147,7 @@ describe CiToolkit::GitlabPr do
   end
 
   it "knows if the PR is big" do
-    obj =  parse(JSON.unparse(changes_count: 501))
+    obj =  parse(JSON.unparse(changes_count: "501"))
     client = instance_spy("client")
     sut = described_class.new(env, [], client)
     allow(client).to receive(:merge_request).and_return(obj)

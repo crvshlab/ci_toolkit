@@ -105,7 +105,7 @@ module CiToolkit
     end
 
     def big?
-      lines_of_code_changed > 500
+      lines_of_code_changed.to_i > 500
     end
 
     def realm_module_modified?

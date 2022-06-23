@@ -107,7 +107,7 @@ module CiToolkit
   # values for the two services are different
   # It uses the ENV["DVCS_SERVICE"] to decide which DVCS to use.
   class DvcsPrUtil
-    def self.status_state(service = ENV["DVCS_SERVICE"])
+    def self.status_state_error(service = ENV["DVCS_SERVICE"])
       status = "error"
       status = "failed" if service == "gitlab"
       status

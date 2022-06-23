@@ -47,14 +47,14 @@ describe CiToolkit::BuildStatus do
   it "updates commit status of github with error" do
     github = instance_spy("github")
     sut = described_class.new("Builds", github)
-    sut.error(CiToolkit::DvcsPrUtil.status_state("github"))
+    sut.error(CiToolkit::DvcsPrUtil.status_state_error("github"))
     expect(github).to have_received(:create_status).with("error", "Builds", env.app_url, "Building failed")
   end
 
   it "updates commit status of gitlab with failed" do
     github = instance_spy("github")
     sut = described_class.new("Builds", github)
-    sut.error(CiToolkit::DvcsPrUtil.status_state("gitlab"))
+    sut.error(CiToolkit::DvcsPrUtil.status_state_error("gitlab"))
     expect(github).to have_received(:create_status).with("failed", "Builds", env.app_url, "Building failed")
   end
 end

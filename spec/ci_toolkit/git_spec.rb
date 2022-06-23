@@ -30,7 +30,7 @@ describe CiToolkit::Git do
 
   it "provides the current branch" do
     sut = described_class.new("git_test")
-    expect(sut.branch).to eq ""
+    expect(sut.branch).to eq "main"
   end
 
   it "provides the current branch in current dir" do
